@@ -1,101 +1,165 @@
 context = {
-    "forms": [
+    "sections": [
         {
-            "name": "api:user_create",
-            "method": "POST",
-            "fields": [
+            "name": "User",
+            "forms": [
                 {
-                    "name": "first_name",
-                    "type": "text",
-                    "required": True
+                    "name": "api:user_create",
+                    "method": "POST",
+                    "fields": [
+                        {
+                            "name": "first_name",
+                            "type": "text",
+                            "required": True
+                        },
+                        {
+                            "name": "last_name",
+                            "type": "text",
+                            "required": True
+                        },
+                        {
+                            "name": "username",
+                            "type": "text",
+                            "required": True
+                        },
+                        {
+                            "name": "password",
+                            "type": "text",
+                            "required": True
+                        },
+                        {
+                            "name": "organization_id",
+                            "type": "number",
+                            "required": True
+                        },
+                        {
+                            "name": "is_staff",
+                            "type": "checkbox",
+                            "required": False
+                        }
+                    ]
                 },
                 {
-                    "name": "last_name",
-                    "type": "text",
-                    "required": True
+                    "name": "api:user_search",
+                    "method": "GET",
+                    "fields": [
+                        {
+                            "name": "user_id",
+                            "type": "number",
+                            "required": False
+                        },
+                        {
+                            "name": "username",
+                            "type": "text",
+                            "required": False
+                        },
+                        {
+                            "name": "organization_id",
+                            "type": "number",
+                            "required": False
+                        },
+                        {
+                            "name": "is_staff",
+                            "type": "checkbox",
+                            "required": False
+                        }
+                    ]
                 },
                 {
-                    "name": "username",
-                    "type": "text",
-                    "required": True
+                    "name": "api:user_update",
+                    "method": "POST",
+                    "fields": [
+                        {
+                            "name": "user_id",
+                            "type": "number",
+                            "required": True
+                        },
+                        {
+                            "name": "username",
+                            "type": "text",
+                            "required": False
+                        },
+                        {
+                            "name": "organization_id",
+                            "type": "number",
+                            "required": False
+                        },
+                        {
+                            "name": "is_staff",
+                            "type": "checkbox",
+                            "required": False
+                        }
+                    ]
                 },
                 {
-                    "name": "password",
-                    "type": "text",
-                    "required": True
+                    "name": "api:user_delete",
+                    "method": "POST",
+                    "fields": [
+                        {
+                            "name": "user_id",
+                            "type": "number",
+                            "required": True
+                        }
+                    ]
                 },
-                {
-                    "name": "organization_id",
-                    "type": "number",
-                    "required": True
-                },
-                {
-                    "name": "is_staff",
-                    "type": "checkbox",
-                    "required": False
-                }
             ]
         },
         {
-            "name": "api:user_search",
-            "method": "GET",
-            "fields": [
+            "name": "Organization",
+            "forms": [
                 {
-                    "name": "user_id",
-                    "type": "number",
-                    "required": False
+                    "name": "api:organization_create",
+                    "method": "POST",
+                    "fields": [
+                        {
+                            "name": "name",
+                            "type": "text",
+                            "required": True
+                        },
+                    ]
                 },
                 {
-                    "name": "username",
-                    "type": "text",
-                    "required": False
+                    "name": "api:organization_search",
+                    "method": "GET",
+                    "fields": [
+                        {
+                            "name": "organization_id",
+                            "type": "number",
+                            "required": False
+                        },
+                        {
+                            "name": "name",
+                            "type": "text",
+                            "required": False
+                        }
+                    ]
                 },
                 {
-                    "name": "organization_id",
-                    "type": "number",
-                    "required": False
+                    "name": "api:organization_update",
+                    "method": "POST",
+                    "fields": [
+                        {
+                            "name": "organization_id",
+                            "type": "number",
+                            "required": True
+                        },
+                        {
+                            "name": "name",
+                            "type": "text",
+                            "required": False
+                        }
+                    ]
                 },
                 {
-                    "name": "is_staff",
-                    "type": "checkbox",
-                    "required": False
-                }
-            ]
-        },
-        {
-            "name": "api:user_update",
-            "method": "POST",
-            "fields": [
-                {
-                    "name": "user_id",
-                    "type": "number",
-                    "required": True
-                },
-                {
-                    "name": "username",
-                    "type": "text",
-                    "required": False
-                },
-                {
-                    "name": "organization_id",
-                    "type": "number",
-                    "required": False
-                },
-                {
-                    "name": "is_staff",
-                    "type": "checkbox",
-                    "required": False
-                }
-            ]
-        },
-        {
-            "name": "api:user_delete",
-            "method": "POST",
-            "fields": [
-                {
-                    "name": "user_id",
-                    "type": "number",
-                    "required": True
+                    "name": "api:organization_delete",
+                    "method": "POST",
+                    "fields": [
+                        {
+                            "name": "organization_id",
+                            "type": "number",
+                            "required": True
+                        }
+                    ]
                 }
             ]
         }

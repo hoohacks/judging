@@ -5,17 +5,20 @@
         <title>API Test</title>
     </head>
     <body>
-        {% for form in forms %}
-        <form method="{{ form.method }}" action="{% url form.name %}">
-            <h3>{{ form.name }}</h3>
-            {% for field in form.fields %}
-            <label for="{{ field.name }}">{{ field.name }}</label>
-            <input type="{{ field.type }}" name="{{ field.name }}" required="{{ field.required }}">
-            <br>
+        {% for section in sections %}
+            <h2>{{ section.name }}</h2>
+            {% for form in section.forms %}
+            <form method="{{ form.method }}" action="{% url form.name %}">
+                <h3>{{ form.name }}</h3>
+                {% for field in form.fields %}
+                <label for="{{ field.name }}">{{ field.name }}</label>
+                <input type="{{ field.type }}" name="{{ field.name }}" {% if field.required %} required {% endif %}>
+                <br>
+                {% endfor %}
+                <input type="submit">
+            </form>
+            <hr>
             {% endfor %}
-            <input type="submit">
-        </form>
-        <hr>
         {% endfor %}
     </body>
 </html>

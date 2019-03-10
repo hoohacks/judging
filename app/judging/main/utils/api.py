@@ -30,7 +30,7 @@ def extract_fields(fields: Dict[str, Dict[str, Any]], params: QueryDict) -> Dict
             elif _info['type'] == datetime.time:
                 kwargs[_attr] = parse_time(params.get(_attr))
             elif _info['type'] == bool:
-                kwargs[_attr] = bool(params.get(_attr)) or False
+                kwargs[_attr] = bool(params.get(_attr, False))
             else:
                 kwargs[_attr] = _info['type'](params.get(_attr))
         elif not params.get(_attr) and _info['required']:

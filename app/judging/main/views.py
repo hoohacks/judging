@@ -3,6 +3,7 @@ import json
 from django.shortcuts import render
 
 from .api.user import *
+from .api.organization import *
 from . import testpage
 
 
