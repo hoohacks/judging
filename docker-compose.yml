@@ -1,0 +1,23 @@
+version: '3'
+
+services:
+  db:
+    image: postgres
+    volumes:
+      - ./postgres:/var/lib/postgresql
+  micro:
+    image: davidbzhao/judging
+    container_name: microservices
+    volumes:
+      - ./app:/app
+    ports:
+      - "5080:8000"
+    depends_on:
+      - db
+    command: bash -c "python /app/judging/manage.py migrate &&
+      python /app/judging/manage.py collectstatic --noinput &&
+      mod_wsgi-express start-server
+        --working-directory /app/judging
+        --url-alias /static /app/judging/staticfiles
+        --reload-on-changes
+        /app/judging/judging/wsgi.py"
