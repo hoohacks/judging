@@ -7,15 +7,16 @@ services:
       - ./postgres:/var/lib/postgresql
   micro:
     image: davidbzhao/judging
-    container_name: microservices
+    container_name: judging_microservices
     volumes:
       - ./app:/app
     ports:
       - "5080:8000"
     depends_on:
       - db
-    command: bash -c "python /app/judging/manage.py migrate &&
-      python /app/judging/manage.py collectstatic --noinput &&
+    command: bash -c "while !</dev/tcp/db/5432; do sleep 1; done;
+      python /app/judging/manage.py migrate &&
+      python /app/judging/manage.py collectstatic --noinput;
       mod_wsgi-express start-server
         --working-directory /app/judging
         --url-alias /static /app/judging/staticfiles
