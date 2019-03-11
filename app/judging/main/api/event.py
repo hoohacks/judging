@@ -29,7 +29,7 @@ def search(event_id: int = None, name: str = None):
         events = events.filter(pk=kwargs['event_id'])
     if 'name' in kwargs:
         events = events.filter(name__iexact=kwargs['name'])
-    return events
+    return events.order_by('-event_id')
 
 
 def update(event_id: int, name: str = None):

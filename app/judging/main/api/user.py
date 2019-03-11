@@ -11,8 +11,9 @@ def create(
     last_name: str,
     username: str,
     password: str,
-    organization_id: int,
+    organization_id: int = None,
     is_staff: bool = None,
+    is_superuser: bool = None,
 ):
     kwargs = locals()
     fields = {
@@ -20,8 +21,9 @@ def create(
         'last_name': {'required': True, 'type': str},
         'username': {'required': True, 'type': str},
         'password': {'required': True, 'type': str},
+        'organization_id': {'required': False, 'type': int},
         'is_staff': {'required': False, 'type': bool},
-        'organization_id': {'required': True, 'type': int},
+        'is_superuser': {'required': False, 'type': bool},
     }
     kwargs = clean_fields(fields, kwargs)
     organization_id = kwargs.pop('organization_id')
