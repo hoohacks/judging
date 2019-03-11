@@ -11,3 +11,9 @@ from .api import criteria
 from .api import criteria_label
 from .api import demo
 from .api import demo_score
+
+def index(request):
+    context = {
+        'user': request.user
+    }
+    return render(request, 'main/index.html', context)

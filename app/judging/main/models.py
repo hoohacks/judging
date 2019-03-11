@@ -10,7 +10,7 @@ as the organizer, defines. The Criteria are restricted to integer ranges, so
 you have the option to define CriteriaLabels for each value in the range.
 """
 from django.db import models
-from django.contrib.auth.models import User as DjangoUser
+from django.contrib.auth.models import AbstractUser
 
 
 class Event(models.Model):
@@ -37,11 +37,14 @@ class Category(models.Model):
     submissions = models.ManyToManyField(Team, related_name='categories')
 
 
-class User(DjangoUser):
-    organization = models.ForeignKey(Organization, on_delete=models.CASCADE)
+class User(AbstractUser):
+    organization = models.ForeignKey(Organization, on_delete=models.CASCADE, null=True, blank=True)
 
     def __str__(self):
-        return '{} {} <{}>'.format(self.first_name, self.last_name, self.email)
+        org_name = 'None'
+        if self.organization:
+            org_name = self.organization.name
+        return '{} {} <{}>'.format(self.first_name, self.last_name, org_name)
 
 
 class Criteria(models.Model):
