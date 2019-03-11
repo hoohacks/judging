@@ -6,27 +6,30 @@ from ..models import DemoScore, Team, User
 from ..utils.api import *
 
 
-def demo_score_create(request):
-    check_method(request, 'POST')
+def create(demo_id: int, criteria_id: int, value: int):
+    kwargs = locals()
     fields = {
         'demo_id': {'required': True, 'type': int},
         'criteria_id': {'required': True, 'type': int},
         'value': {'required': True, 'type': int},
     }
-    kwargs = extract_fields(fields, request.POST)
+    kwargs = clean_fields(fields, kwargs)
     demo_score = DemoScore.objects.create(**kwargs)
-    return JsonResponse(model_to_dict(demo_score))
+    return demo_score
 
 
-def demo_score_search(request):
-    check_method(request, 'GET')
+def search(demo_score_id: int = None,
+           demo_id: int = None,
+           criteria_id: int = None,
+           value: int = None):
+    kwargs = locals()
     fields = {
         'demo_score_id': {'required': False, 'type': int},
         'demo_id': {'required': False, 'type': int},
         'criteria_id': {'required': False, 'type': int},
         'value': {'required': False, 'type': int},
     }
-    kwargs = extract_fields(fields, request.GET)
+    kwargs = clean_fields(fields, kwargs)
 
     demo_scores = DemoScore.objects.all()
     if 'demo_score_id' in kwargs:
@@ -38,35 +41,33 @@ def demo_score_search(request):
             criteria__id__exact=kwargs['criteria_id'])
     if 'value' in kwargs:
         demo_scores = demo_scores.filter(value__exact=kwargs['value'])
-
-    results = {
-        'results': [model_to_dict(demo_score) for demo_score in demo_scores]
-    }
-    return JsonResponse(results)
+    return demo_scores
 
 
-def demo_score_update(request):
-    check_method(request, 'POST')
+def update(demo_score_id: int,
+           demo_id: int = None,
+           criteria_id: int = None,
+           value: int = None):
+    kwargs = locals()
     fields = {
         'demo_score_id': {'required': True, 'type': int},
         'demo_id': {'required': False, 'type': int},
         'criteria_id': {'required': False, 'type': int},
         'value': {'required': False, 'type': int},
     }
-    kwargs = extract_fields(fields, request.POST)
+    kwargs = clean_fields(fields, kwargs)
 
     demo_score_id = kwargs.pop('demo_score_id')
     DemoScore.objects.filter(pk=demo_score_id).update(**kwargs)
     demo_score = DemoScore.objects.get(pk=demo_score_id)
-    return JsonResponse(model_to_dict(demo_score))
+    return demo_score
 
 
-def demo_score_delete(request):
-    check_method(request, 'POST')
+def delete(demo_score_id: int):
+    kwargs = locals()
     fields = {
         'demo_score_id': {'required': True, 'type': int},
     }
-    kwargs = extract_fields(fields, request.POST)
+    kwargs = clean_fields(fields, kwargs)
 
     DemoScore.objects.get(pk=kwargs['demo_score_id']).delete()
-    return JsonResponse({})

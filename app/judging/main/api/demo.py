@@ -6,25 +6,25 @@ from ..models import Demo, Team, User
 from ..utils.api import *
 
 
-def demo_create(request):
-    check_method(request, 'POST')
+def create(judge_id: int, team_id: int):
+    kwargs = locals()
     fields = {
         'judge_id': {'required': True, 'type': int},
         'team_id': {'required': True, 'type': int},
     }
-    kwargs = extract_fields(fields, request.POST)
+    kwargs = clean_fields(fields, kwargs)
     demo = Demo.objects.create(**kwargs)
-    return JsonResponse(model_to_dict(demo))
+    return demo
 
 
-def demo_search(request):
-    check_method(request, 'GET')
+def search(demo_id: int = None, judge_id: int = None, team_id: int = None):
+    kwargs = locals()
     fields = {
         'demo_id': {'required': False, 'type': int},
         'judge_id': {'required': False, 'type': int},
         'team_id': {'required': False, 'type': int},
     }
-    kwargs = extract_fields(fields, request.GET)
+    kwargs = clean_fields(fields, kwargs)
 
     demos = Demo.objects.all()
     if 'demo_id' in kwargs:
@@ -33,34 +33,30 @@ def demo_search(request):
         demos = demos.filter(judge__id__exact=kwargs['judge_id'])
     if 'team_id' in kwargs:
         demos = demos.filter(team__id__exact=kwargs['team_id'])
-
-    results = {
-        'results': [model_to_dict(demo) for demo in demos]
-    }
-    return JsonResponse(results)
+    return demos
 
 
-def demo_update(request):
-    check_method(request, 'POST')
+def update(demo_id: int, judge_id: int = None, team_id: int = None):
+    kwargs = locals()
     fields = {
         'demo_id': {'required': True, 'type': int},
         'judge_id': {'required': False, 'type': int},
         'team_id': {'required': False, 'type': int},
     }
-    kwargs = extract_fields(fields, request.POST)
+    kwargs = clean_fields(fields, kwargs)
 
     demo_id = kwargs.pop('demo_id')
     Demo.objects.filter(pk=demo_id).update(**kwargs)
     demo = Demo.objects.get(pk=demo_id)
-    return JsonResponse(model_to_dict(demo))
+    return demo
 
 
-def demo_delete(request):
-    check_method(request, 'POST')
+def delete(demo_id: int):
+    kwargs = locals()
     fields = {
         'demo_id': {'required': True, 'type': int},
     }
-    kwargs = extract_fields(fields, request.POST)
+    kwargs = clean_fields(fields, kwargs)
 
     Demo.objects.get(pk=kwargs['demo_id']).delete()
-    return JsonResponse({})
+

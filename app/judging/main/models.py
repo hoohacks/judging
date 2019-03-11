@@ -41,7 +41,7 @@ class User(DjangoUser):
     organization = models.ForeignKey(Organization, on_delete=models.CASCADE)
 
     def __str__(self):
-        return '{} <{}>'.format(self.name, self.email)
+        return '{} {} <{}>'.format(self.first_name, self.last_name, self.email)
 
 
 class Criteria(models.Model):

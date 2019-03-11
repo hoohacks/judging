@@ -6,29 +6,29 @@ from ..models import Category, Team
 from ..utils.api import *
 
 
-def serialize_category(category):
-    obj = model_to_dict(category, fields=[
-                        'id', 'name', 'description', 'organization_id', 'number_winners'])
-    obj['submissions'] = [model_to_dict(sub)
-                          for sub in category.submissions.all()]
-    return obj
-
-
-def category_create(request):
-    check_method(request, 'POST')
+def create(name: str,
+                    organization_id: int,
+                    description: str = None,
+                    number_winners: int = None):
+    kwargs = locals()
     fields = {
         'name': {'required': True, 'type': str},
-        'description': {'required': False, 'type': str},
         'organization_id': {'required': True, 'type': int},
+        'description': {'required': False, 'type': str},
         'number_winners': {'required': False, 'type': int},
     }
-    kwargs = extract_fields(fields, request.POST)
+    kwargs = clean_fields(fields, kwargs)
     category = Category.objects.create(**kwargs)
-    return JsonResponse(serialize_category(category))
+    return category
 
 
-def category_search(request):
-    check_method(request, 'GET')
+def search(
+        category_id: int = None,
+        name: str = None,
+        description: str = None,
+        organization_id: int = None,
+        number_winners: int = None):
+    kwargs = locals()
     fields = {
         'category_id': {'required': False, 'type': int},
         'name': {'required': False, 'type': str},
@@ -36,7 +36,7 @@ def category_search(request):
         'organization_id': {'required': False, 'type': int},
         'number_winners': {'required': False, 'type': int},
     }
-    kwargs = extract_fields(fields, request.GET)
+    kwargs = clean_fields(fields, kwargs)
 
     categories = Category.objects.all()
     if 'category_id' in kwargs:
@@ -52,15 +52,16 @@ def category_search(request):
     if 'number_winners' in kwargs:
         categories = categories.filter(
             number_winners__exact=kwargs['number_winners'])
-
-    results = {
-        'results': [serialize_category(category) for category in categories]
-    }
-    return JsonResponse(results)
+    return categories
 
 
-def category_update(request):
-    check_method(request, 'POST')
+def update(
+        category_id: int,
+        name: str = None,
+        description: str = None,
+        organization_id: int = None,
+        number_winners: int = None):
+    kwargs = locals()
     fields = {
         'category_id': {'required': True, 'type': int},
         'name': {'required': False, 'type': str},
@@ -68,50 +69,49 @@ def category_update(request):
         'organization_id': {'required': False, 'type': int},
         'number_winners': {'required': False, 'type': int},
     }
-    kwargs = extract_fields(fields, request.POST)
+    kwargs = clean_fields(fields, kwargs)
 
     category_id = kwargs.pop('category_id')
     Category.objects.filter(pk=category_id).update(**kwargs)
     category = Category.objects.get(pk=category_id)
-    return JsonResponse(serialize_category(category))
+    return category
 
 
-def category_delete(request):
-    check_method(request, 'POST')
+def delete(category_id: int):
+    kwargs = locals()
     fields = {
         'category_id': {'required': True, 'type': int},
     }
-    kwargs = extract_fields(fields, request.POST)
+    kwargs = clean_fields(fields, kwargs)
 
     Category.objects.get(pk=kwargs['category_id']).delete()
-    return JsonResponse({})
 
 
-def category_add_team(request):
-    check_method(request, 'POST')
+def add_team(category_id: int,
+                      team_id: int):
+    kwargs = locals()
     fields = {
         'category_id': {'required': True, 'type': int},
         'team_id': {'required': True, 'type': int},
     }
-    kwargs = extract_fields(fields, request.POST)
+    kwargs = clean_fields(fields, kwargs)
 
     category = Category.objects.get(pk=kwargs['category_id'])
     team = Team.objects.get(pk=kwargs['team_id'])
     category.submissions.add(team)
+    return category
 
-    return JsonResponse(serialize_category(category))
 
-
-def category_remove_team(request):
-    check_method(request, 'POST')
+def remove_team(category_id: int,
+                         team_id: int):
+    kwargs = locals()
     fields = {
         'category_id': {'required': True, 'type': int},
         'team_id': {'required': True, 'type': int},
     }
-    kwargs = extract_fields(fields, request.POST)
+    kwargs = clean_fields(fields, kwargs)
 
     category = Category.objects.get(pk=kwargs['category_id'])
     team = Team.objects.get(pk=kwargs['team_id'])
     category.submissions.remove(team)
-
-    return JsonResponse(serialize_category(category))
+    return category

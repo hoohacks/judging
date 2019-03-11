@@ -5,32 +5,31 @@ from django.shortcuts import render
 from ..models import Criteria, CriteriaLabel
 from ..utils.api import *
 
-# criteria = models.ForeignKey(Criteria, on_delete=models.CASCADE)
-# score = models.IntegerField()
-# label = models.CharField(max_length=255)
 
-
-def criteria_label_create(request):
-    check_method(request, 'POST')
+def create(criteria_id: int, score: int, label: str):
+    kwargs = locals()
     fields = {
         'criteria_id': {'required': True, 'type': int},
         'score': {'required': True, 'type': int},
         'label': {'required': True, 'type': str},
     }
-    kwargs = extract_fields(fields, request.POST)
+    kwargs = clean_fields(fields, kwargs)
     criteria_label = CriteriaLabel.objects.create(**kwargs)
-    return JsonResponse(model_to_dict(criteria_label))
+    return criteria_label
 
 
-def criteria_label_search(request):
-    check_method(request, 'GET')
+def search(criteria_label_id: int = None,
+                          criteria_id: int = None,
+                          score: int = None,
+                          label: str = None):
+    kwargs = locals()
     fields = {
         'criteria_label_id': {'required': False, 'type': int},
         'criteria_id': {'required': False, 'type': int},
         'score': {'required': False, 'type': int},
         'label': {'required': False, 'type': str},
     }
-    kwargs = extract_fields(fields, request.GET)
+    kwargs = clean_fields(fields, kwargs)
 
     criteria_labels = CriteriaLabel.objects.all()
     if 'criteria_label_id' in kwargs:
@@ -45,21 +44,21 @@ def criteria_label_search(request):
         criteria_labels = criteria_labels.filter(
             label__icontains=kwargs['label'])
 
-    results = {
-        'results': [model_to_dict(criteria_label) for criteria_label in criteria_labels]
-    }
-    return JsonResponse(results)
+    return criteria_labels
 
 
-def criteria_label_update(request):
-    check_method(request, 'POST')
+def update(criteria_label_id: int,
+                          criteria_id: int = None,
+                          score: int = None,
+                          label: str = None):
+    kwargs = locals()
     fields = {
         'criteria_label_id': {'required': True, 'type': int},
         'criteria_id': {'required': False, 'type': int},
         'score': {'required': False, 'type': int},
         'label': {'required': False, 'type': str},
     }
-    kwargs = extract_fields(fields, request.POST)
+    kwargs = clean_fields(fields, kwargs)
 
     criteria_label_id = kwargs.pop('criteria_label_id')
     if 'criteria_id' in kwargs:
@@ -68,15 +67,14 @@ def criteria_label_update(request):
         kwargs['criteria'] = criteria
     CriteriaLabel.objects.filter(pk=criteria_label_id).update(**kwargs)
     criteria_label = CriteriaLabel.objects.get(pk=criteria_label_id)
-    return JsonResponse(model_to_dict(criteria_label))
+    return criteria_label
 
 
-def criteria_label_delete(request):
-    check_method(request, 'POST')
+def delete(criteria_label_id: int):
+    kwargs = locals()
     fields = {
         'criteria_label_id': {'required': True, 'type': int},
     }
-    kwargs = extract_fields(fields, request.POST)
+    kwargs = clean_fields(fields, kwargs)
 
     CriteriaLabel.objects.get(pk=kwargs['criteria_label_id']).delete()
-    return JsonResponse({})

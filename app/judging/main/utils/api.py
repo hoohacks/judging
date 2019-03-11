@@ -38,6 +38,23 @@ def extract_fields(fields: Dict[str, Dict[str, Any]], params: QueryDict) -> Dict
     return kwargs
 
 
+def clean_fields(fields: Dict[str, Dict[str, Any]], params: QueryDict) -> Dict[str, Any]:
+    kwargs = {}
+    for _attr, _info in fields.items():
+        if params.get(_attr) == None and _info['required']:
+            raise ApiException(reason="{} field is required".format(_attr))
+
+        if _info['type'] == datetime.date:
+            kwargs[_attr] = parse_date(params.get(_attr))
+        elif _info['type'] == datetime.time:
+            kwargs[_attr] = parse_time(params.get(_attr))
+        elif _info['type'] == bool:
+            kwargs[_attr] = bool(params.get(_attr, False))
+        else:
+            kwargs[_attr] = _info['type'](params.get(_attr))
+    return kwargs
+
+
 def check_method(request, correct_method):
     if request.method != correct_method:
         raise ApiException(reason="Received {}, must be {}".format(request.method, correct_method),

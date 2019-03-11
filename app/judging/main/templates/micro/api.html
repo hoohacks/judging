@@ -15,6 +15,7 @@
                     <h1 class="text-light bg-dark">{{ section.name }}</h1>
                     {% for form in section.forms %}
                     <form method="{{ form.method }}" action="{% url form.name %}">
+                        {% csrf_token %}
                         <h5>{{ form.name }}</h5>
                         <div class="form-group ml-4">
                             {% for field in form.fields %}

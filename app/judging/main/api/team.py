@@ -6,8 +6,12 @@ from ..models import Team
 from ..utils.api import *
 
 
-def team_create(request):
-    check_method(request, 'POST')
+def create(name: str,
+                table: str = None,
+                members: str = None,
+                link: str = None,
+                is_anchor: bool = None):
+    kwargs = locals()
     fields = {
         'name': {'required': True, 'type': str},
         'table': {'required': False, 'type': str},
@@ -15,13 +19,18 @@ def team_create(request):
         'link': {'required': True, 'type': str},
         'is_anchor': {'required': False, 'type': bool},
     }
-    kwargs = extract_fields(fields, request.POST)
+    kwargs = clean_fields(fields, kwargs)
     team = Team.objects.create(**kwargs)
-    return JsonResponse(model_to_dict(team))
+    return team
 
 
-def team_search(request):
-    check_method(request, 'GET')
+def search(team_id: int = None,
+                name: str = None,
+                table: str = None,
+                members: str = None,
+                link: str = None,
+                is_anchor: bool = None):
+    kwargs = locals()
     fields = {
         'team_id': {'required': False, 'type': int},
         'name': {'required': False, 'type': str},
@@ -30,7 +39,7 @@ def team_search(request):
         'link': {'required': False, 'type': str},
         'is_anchor': {'required': False, 'type': bool},
     }
-    kwargs = extract_fields(fields, request.GET)
+    kwargs = clean_fields(fields, kwargs)
 
     teams = Team.objects.all()
     if 'team_id' in kwargs:
@@ -46,14 +55,16 @@ def team_search(request):
     if 'is_anchor' in kwargs:
         teams = teams.filter(is_anchor__exact=kwargs['is_anchor'])
 
-    results = {
-        'results': [model_to_dict(team) for team in teams]
-    }
-    return JsonResponse(results)
+    return teams
 
 
-def team_update(request):
-    check_method(request, 'POST')
+def update(team_id: int,
+                name: str = None,
+                table: str = None,
+                members: str = None,
+                link: str = None,
+                is_anchor: bool = None):
+    kwargs = locals()
     fields = {
         'team_id': {'required': True, 'type': int},
         'name': {'required': False, 'type': str},
@@ -62,20 +73,19 @@ def team_update(request):
         'link': {'required': False, 'type': str},
         'is_anchor': {'required': False, 'type': bool},
     }
-    kwargs = extract_fields(fields, request.POST)
+    kwargs = clean_fields(fields, kwargs)
 
     team_id = kwargs.pop('team_id')
     Team.objects.filter(pk=team_id).update(**kwargs)
     team = Team.objects.get(pk=team_id)
-    return JsonResponse(model_to_dict(team))
+    return team
 
 
-def team_delete(request):
-    check_method(request, 'POST')
+def delete(team_id: int):
+    kwargs = locals()
     fields = {
         'team_id': {'required': True, 'type': int},
     }
-    kwargs = extract_fields(fields, request.POST)
+    kwargs = clean_fields(fields, kwargs)
 
     Team.objects.get(pk=kwargs['team_id']).delete()
-    return JsonResponse({})

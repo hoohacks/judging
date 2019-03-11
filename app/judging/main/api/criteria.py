@@ -6,8 +6,12 @@ from ..models import Criteria
 from ..utils.api import *
 
 
-def criteria_create(request):
-    check_method(request, 'POST')
+def create(name: str,
+           description: str = None,
+           min_score: int = None,
+           max_score: int = None,
+           weight: float = None):
+    kwargs = locals()
     fields = {
         'name': {'required': True, 'type': str},
         'description': {'required': False, 'type': str},
@@ -15,19 +19,21 @@ def criteria_create(request):
         'max_score': {'required': False, 'type': int},
         'weight': {'required': False, 'type': float},
     }
-    kwargs = extract_fields(fields, request.POST)
+    kwargs = clean_fields(fields, kwargs)
     criteria = Criteria.objects.create(**kwargs)
-    return JsonResponse(model_to_dict(criteria))
+    return criteria
 
 
-def criteria_search(request):
-    check_method(request, 'GET')
+def search(criteria_id: int = None,
+           name: str = None,
+           description: str = None):
+    kwargs = locals()
     fields = {
         'criteria_id': {'required': False, 'type': int},
         'name': {'required': False, 'type': str},
         'description': {'required': False, 'type': str},
     }
-    kwargs = extract_fields(fields, request.GET)
+    kwargs = clean_fields(fields, kwargs)
 
     criterias = Criteria.objects.all()
     if 'criteria_id' in kwargs:
@@ -37,15 +43,16 @@ def criteria_search(request):
     if 'description' in kwargs:
         criterias = criterias.filter(
             description__icontains=kwargs['description'])
-
-    results = {
-        'results': [model_to_dict(criteria) for criteria in criterias]
-    }
-    return JsonResponse(results)
+    return criterias
 
 
-def criteria_update(request):
-    check_method(request, 'POST')
+def update(criteria_id: int,
+           name: str = None,
+           description: str = None,
+           min_score: int = None,
+           max_score: int = None,
+           weight: float = None):
+    kwargs = locals()
     fields = {
         'criteria_id': {'required': True, 'type': int},
         'name': {'required': False, 'type': str},
@@ -54,20 +61,20 @@ def criteria_update(request):
         'max_score': {'required': False, 'type': int},
         'weight': {'required': False, 'type': float},
     }
-    kwargs = extract_fields(fields, request.POST)
+    kwargs = clean_fields(fields, kwargs)
 
     criteria_id = kwargs.pop('criteria_id')
     Criteria.objects.filter(pk=criteria_id).update(**kwargs)
     criteria = Criteria.objects.get(pk=criteria_id)
-    return JsonResponse(model_to_dict(criteria))
+    return criteria
 
 
-def criteria_delete(request):
-    check_method(request, 'POST')
+def delete(criteria_id: int):
+    kwargs = locals()
     fields = {
         'criteria_id': {'required': True, 'type': int},
     }
-    kwargs = extract_fields(fields, request.POST)
+    kwargs = clean_fields(fields, kwargs)
 
     Criteria.objects.get(pk=kwargs['criteria_id']).delete()
-    return JsonResponse({})
+

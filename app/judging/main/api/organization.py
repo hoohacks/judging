@@ -6,56 +6,51 @@ from ..models import Organization
 from ..utils.api import *
 
 
-def organization_create(request):
-    check_method(request, 'POST')
+def create(name: str):
+    kwargs = locals()
     fields = {
         'name': {'required': True, 'type': str},
     }
-    kwargs = extract_fields(fields, request.POST)
+    kwargs = clean_fields(fields, kwargs)
     organization = Organization.objects.create(**kwargs)
-    return JsonResponse(model_to_dict(organization))
+    return organization
 
 
-def organization_search(request):
-    check_method(request, 'GET')
+def search(organization_id: int = None, name: str = None):
+    kwargs = locals()
     fields = {
         'organization_id': {'required': False, 'type': int},
         'name': {'required': False, 'type': str},
     }
-    kwargs = extract_fields(fields, request.GET)
+    kwargs = clean_fields(fields, kwargs)
 
     organizations = Organization.objects.all()
     if 'organization_id' in kwargs:
         organizations = organizations.filter(pk=kwargs['organization_id'])
     if 'name' in kwargs:
         organizations = organizations.filter(name__iexact=kwargs['name'])
-
-    results = {
-        'results': [model_to_dict(organization) for organization in organizations]
-    }
-    return JsonResponse(results)
+    return organizations
 
 
-def organization_update(request):
-    check_method(request, 'POST')
+def update(organization_id: int, name: str = None):
+    kwargs = locals()
     fields = {
         'organization_id': {'required': True, 'type': int},
         'name': {'required': False, 'type': str},
     }
-    kwargs = extract_fields(fields, request.POST)
+    kwargs = clean_fields(fields, kwargs)
 
     organization_id = kwargs.pop('organization_id')
     Organization.objects.filter(pk=organization_id).update(**kwargs)
     organization = Organization.objects.get(pk=organization_id)
-    return JsonResponse(model_to_dict(organization))
+    return organization
 
 
-def organization_delete(request):
-    check_method(request, 'POST')
+def delete(organization_id: int):
+    kwargs = locals()
     fields = {
         'organization_id': {'required': True, 'type': int},
     }
-    kwargs = extract_fields(fields, request.POST)
+    kwargs = clean_fields(fields, kwargs)
 
     Organization.objects.get(pk=kwargs['organization_id']).delete()
-    return JsonResponse({})

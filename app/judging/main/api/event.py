@@ -6,56 +6,51 @@ from ..models import Event
 from ..utils.api import *
 
 
-def event_create(request):
-    check_method(request, 'POST')
+def create(name: str):
+    kwargs = locals()
     fields = {
         'name': {'required': True, 'type': str},
     }
-    kwargs = extract_fields(fields, request.POST)
+    kwargs = clean_fields(fields, kwargs)
     event = Event.objects.create(**kwargs)
-    return JsonResponse(model_to_dict(event))
+    return event
 
 
-def event_search(request):
-    check_method(request, 'GET')
+def search(event_id: int = None, name: str = None):
+    kwargs = locals()
     fields = {
         'event_id': {'required': False, 'type': int},
         'name': {'required': False, 'type': str},
     }
-    kwargs = extract_fields(fields, request.GET)
+    kwargs = clean_fields(fields, kwargs)
 
     events = Event.objects.all()
     if 'event_id' in kwargs:
         events = events.filter(pk=kwargs['event_id'])
     if 'name' in kwargs:
         events = events.filter(name__iexact=kwargs['name'])
-
-    results = {
-        'results': [model_to_dict(event) for event in events]
-    }
-    return JsonResponse(results)
+    return events
 
 
-def event_update(request):
-    check_method(request, 'POST')
+def update(event_id: int, name: str = None):
+    kwargs = locals()
     fields = {
         'event_id': {'required': True, 'type': int},
         'name': {'required': False, 'type': str},
     }
-    kwargs = extract_fields(fields, request.POST)
+    kwargs = clean_fields(fields, kwargs)
 
     event_id = kwargs.pop('event_id')
     Event.objects.filter(pk=event_id).update(**kwargs)
     event = Event.objects.get(pk=event_id)
-    return JsonResponse(model_to_dict(event))
+    return event
 
 
-def event_delete(request):
-    check_method(request, 'POST')
+def delete(event_id: int):
+    kwargs = locals()
     fields = {
         'event_id': {'required': True, 'type': int},
     }
-    kwargs = extract_fields(fields, request.POST)
+    kwargs = clean_fields(fields, kwargs)
 
     Event.objects.get(pk=kwargs['event_id']).delete()
-    return JsonResponse({})
