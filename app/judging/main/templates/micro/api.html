@@ -3,22 +3,31 @@
     <head>
         <meta charset="utf-8">
         <title>API Test</title>
+
+        {% load pipeline %}
+        {% stylesheet 'main' %}
     </head>
     <body>
-        {% for section in sections %}
-            <h2>{{ section.name }}</h2>
-            {% for form in section.forms %}
-            <form method="{{ form.method }}" action="{% url form.name %}">
-                <h3>{{ form.name }}</h3>
-                {% for field in form.fields %}
-                <label for="{{ field.name }}">{{ field.name }}</label>
-                <input type="{{ field.type }}" name="{{ field.name }}" {% if field.required %} required {% endif %}>
-                <br>
+        <div class="container">
+            <div class="row">
+                {% for section in sections %}
+                <div class="col-sm-7 mx-auto">
+                    <h1 class="text-light bg-dark">{{ section.name }}</h1>
+                    {% for form in section.forms %}
+                    <form method="{{ form.method }}" action="{% url form.name %}">
+                        <h5>{{ form.name }}</h5>
+                        <div class="form-group ml-4">
+                            {% for field in form.fields %}
+                            <label class="mb-0" for="{{ field.name }}">{{ field.name }}</label>
+                            <input class="form-control mb-2" type="{{ field.type }}" name="{{ field.name }}" {% if field.required %} required {% endif %}>
+                            {% endfor %}
+                            <input class="btn btn-primary" type="submit">
+                        </div>
+                    </form>
+                    {% endfor %}
+                </div>
                 {% endfor %}
-                <input type="submit">
-            </form>
-            <hr>
-            {% endfor %}
-        {% endfor %}
+           </div>
+        </div>
     </body>
 </html>

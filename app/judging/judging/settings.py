@@ -32,6 +32,7 @@ ALLOWED_HOSTS = []
 
 INSTALLED_APPS = [
     'main.apps.MainConfig',
+    'pipeline',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -123,3 +124,28 @@ USE_TZ = True
 STATIC_URL = '/static/'
 
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+
+# Pipeline
+STATICFILES_STORAGE = 'pipeline.storage.PipelineStorage'
+PIPELINE_STORAGE = 'pipeline.storage.PipelineStorage'
+STATICFILES_FINDERS = [
+    'django.contrib.staticfiles.finders.FileSystemFinder',
+    'django.contrib.staticfiles.finders.AppDirectoriesFinder',
+    'pipeline.finders.PipelineFinder',
+]
+
+PIPELINE = {
+    'PIPELINE_ENABLED': True,
+    'COMPILERS': [
+        'pipeline.compilers.sass.SASSCompiler'
+    ],
+    'SASS_BINARY': '/usr/bin/sass',
+    'STYLESHEETS': {
+        'main': {
+            'source_filenames': {
+                'scss/custom.scss',
+            },
+            'output_filename': 'css/main.css'
+        }
+    }
+}
