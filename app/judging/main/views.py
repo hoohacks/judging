@@ -10,6 +10,7 @@ from .api.category import *
 from .api.criteria import *
 from .api.criteria_label import *
 from .api.demo import *
+from .api.demo_score import *
 from . import testpage
 
 

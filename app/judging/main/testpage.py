@@ -734,6 +734,94 @@ context = {
                     ]
                 }
             ]
+        }, {
+            "name": "DemoScore",
+            "forms": [
+                {
+                    "name": "api:demo_score_create",
+                    "method": "POST",
+                    "fields": [
+                        {
+                            "name": "demo_id",
+                            "type": "number",
+                            "required": True
+                        },
+                        {
+                            "name": "criteria_id",
+                            "type": "number",
+                            "required": True
+                        },
+                        {
+                            "name": "value",
+                            "type": "number",
+                            "required": True
+                        }
+                    ]
+                },
+                {
+                    "name": "api:demo_score_search",
+                    "method": "GET",
+                    "fields": [
+                        {
+                            "name": "demo_score_id",
+                            "type": "number",
+                            "required": False
+                        },
+                        {
+                            "name": "demo_id",
+                            "type": "number",
+                            "required": False
+                        },
+                        {
+                            "name": "criteria_id",
+                            "type": "number",
+                            "required": False
+                        },
+                        {
+                            "name": "value",
+                            "type": "number",
+                            "required": False
+                        }
+                    ]
+                },
+                {
+                    "name": "api:demo_score_update",
+                    "method": "POST",
+                    "fields": [
+                        {
+                            "name": "demo_score_id",
+                            "type": "number",
+                            "required": True
+                        },
+                        {
+                            "name": "demo_id",
+                            "type": "number",
+                            "required": False
+                        },
+                        {
+                            "name": "criteria_id",
+                            "type": "number",
+                            "required": False
+                        },
+                        {
+                            "name": "value",
+                            "type": "number",
+                            "required": False
+                        }
+                    ]
+                },
+                {
+                    "name": "api:demo_score_delete",
+                    "method": "POST",
+                    "fields": [
+                        {
+                            "name": "demo_score_id",
+                            "type": "number",
+                            "required": True
+                        }
+                    ]
+                }
+            ]
         }
     ]
 }

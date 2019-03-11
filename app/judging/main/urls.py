@@ -39,4 +39,8 @@ urlpatterns = [
     path('demo/search', views.demo_search, name='demo_search'),
     path('demo/update', views.demo_update, name='demo_update'),
     path('demo/delete', views.demo_delete, name='demo_delete'),
+    path('demo_score/create', views.demo_score_create, name='demo_score_create'),
+    path('demo_score/search', views.demo_score_search, name='demo_score_search'),
+    path('demo_score/update', views.demo_score_update, name='demo_score_update'),
+    path('demo_score/delete', views.demo_score_delete, name='demo_score_delete'),
 ]
