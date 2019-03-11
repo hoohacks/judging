@@ -21,4 +21,10 @@ urlpatterns = [
     path('team/search', views.team_search, name='team_search'),
     path('team/update', views.team_update, name='team_update'),
     path('team/delete', views.team_delete, name='team_delete'),
+    path('category/create', views.category_create, name='category_create'),
+    path('category/search', views.category_search, name='category_search'),
+    path('category/update', views.category_update, name='category_update'),
+    path('category/delete', views.category_delete, name='category_delete'),
+    path('category/add_team', views.category_add_team, name='category_add_team'),
+    path('category/remove_team', views.category_remove_team, name='category_remove_team'),
 ]

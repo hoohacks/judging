@@ -339,6 +339,139 @@ context = {
                     ]
                 }
             ]
+        }, {
+            "name": "Category",
+            "forms": [
+                {
+                    "name": "api:category_create",
+                    "method": "POST",
+                    "fields": [
+                        {
+                            "name": "name",
+                            "type": "text",
+                            "required": True
+                        },
+                        {
+                            "name": "description",
+                            "type": "text",
+                            "required": False
+                        },
+                        {
+                            "name": "organization_id",
+                            "type": "number",
+                            "required": True
+                        },
+                        {
+                            "name": "number_winners",
+                            "type": "number",
+                            "required": False
+                        }
+                    ]
+                },
+                {
+                    "name": "api:category_search",
+                    "method": "GET",
+                    "fields": [
+                        {
+                            "name": "category_id",
+                            "type": "number",
+                            "required": False
+                        },
+                        {
+                            "name": "name",
+                            "type": "text",
+                            "required": False
+                        },
+                        {
+                            "name": "description",
+                            "type": "text",
+                            "required": False
+                        },
+                        {
+                            "name": "organization_id",
+                            "type": "number",
+                            "required": False
+                        },
+                        {
+                            "name": "number_winners",
+                            "type": "number",
+                            "required": False
+                        }
+                    ]
+                },
+                {
+                    "name": "api:category_update",
+                    "method": "POST",
+                    "fields": [
+                        {
+                            "name": "category_id",
+                            "type": "number",
+                            "required": True
+                        },
+                        {
+                            "name": "name",
+                            "type": "text",
+                            "required": False
+                        },
+                        {
+                            "name": "description",
+                            "type": "text",
+                            "required": False
+                        },
+                        {
+                            "name": "organization_id",
+                            "type": "number",
+                            "required": False
+                        },
+                        {
+                            "name": "number_winners",
+                            "type": "number",
+                            "required": False
+                        }
+                    ]
+                },
+                {
+                    "name": "api:category_add_team",
+                    "method": "POST",
+                    "fields": [
+                        {
+                            "name": "category_id",
+                            "type": "number",
+                            "required": True
+                        }, {
+                            "name": "team_id",
+                            "type": "number",
+                            "required": True
+                        }
+                    ]
+                },
+                {
+                    "name": "api:category_remove_team",
+                    "method": "POST",
+                    "fields": [
+                        {
+                            "name": "category_id",
+                            "type": "number",
+                            "required": True
+                        }, {
+                            "name": "team_id",
+                            "type": "number",
+                            "required": True
+                        }
+                    ]
+                },
+                {
+                    "name": "api:category_delete",
+                    "method": "POST",
+                    "fields": [
+                        {
+                            "name": "category_id",
+                            "type": "number",
+                            "required": True
+                        }
+                    ]
+                }
+            ]
         }
     ]
 }

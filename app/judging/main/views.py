@@ -6,6 +6,7 @@ from .api.user import *
 from .api.organization import *
 from .api.event import *
 from .api.team import *
+from .api.category import *
 from . import testpage
 
 
