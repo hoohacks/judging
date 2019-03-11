@@ -162,6 +162,65 @@ context = {
                     ]
                 }
             ]
+        },
+        {
+            "name": "Event",
+            "forms": [
+                {
+                    "name": "api:event_create",
+                    "method": "POST",
+                    "fields": [
+                        {
+                            "name": "name",
+                            "type": "text",
+                            "required": True
+                        },
+                    ]
+                },
+                {
+                    "name": "api:event_search",
+                    "method": "GET",
+                    "fields": [
+                        {
+                            "name": "event_id",
+                            "type": "number",
+                            "required": False
+                        },
+                        {
+                            "name": "name",
+                            "type": "text",
+                            "required": False
+                        }
+                    ]
+                },
+                {
+                    "name": "api:event_update",
+                    "method": "POST",
+                    "fields": [
+                        {
+                            "name": "event_id",
+                            "type": "number",
+                            "required": True
+                        },
+                        {
+                            "name": "name",
+                            "type": "text",
+                            "required": False
+                        }
+                    ]
+                },
+                {
+                    "name": "api:event_delete",
+                    "method": "POST",
+                    "fields": [
+                        {
+                            "name": "event_id",
+                            "type": "number",
+                            "required": True
+                        }
+                    ]
+                }
+            ]
         }
     ]
 }

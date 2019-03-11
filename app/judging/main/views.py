@@ -4,6 +4,7 @@ from django.shortcuts import render
 
 from .api.user import *
 from .api.organization import *
+from .api.event import *
 from . import testpage
 
 

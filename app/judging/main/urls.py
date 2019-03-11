@@ -13,4 +13,8 @@ urlpatterns = [
     path('organization/search', views.organization_search, name='organization_search'),
     path('organization/update', views.organization_update, name='organization_update'),
     path('organization/delete', views.organization_delete, name='organization_delete'),
+    path('event/create', views.event_create, name='event_create'),
+    path('event/search', views.event_search, name='event_search'),
+    path('event/update', views.event_update, name='event_update'),
+    path('event/delete', views.event_delete, name='event_delete'),
 ]
