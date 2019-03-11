@@ -221,6 +221,124 @@ context = {
                     ]
                 }
             ]
+        }, {
+            "name": "Team",
+            "forms": [
+                {
+                    "name": "api:team_create",
+                    "method": "POST",
+                    "fields": [
+                        {
+                            "name": "name",
+                            "type": "text",
+                            "required": True
+                        },
+                        {
+                            "name": "link",
+                            "type": "text",
+                            "required": True
+                        },
+                        {
+                            "name": "table",
+                            "type": "text",
+                            "required": False
+                        },
+                        {
+                            "name": "members",
+                            "type": "text",
+                            "required": False
+                        },
+                        {
+                            "name": "is_anchor",
+                            "type": "checkbox",
+                            "required": False
+                        }
+                    ]
+                },
+                {
+                    "name": "api:team_search",
+                    "method": "GET",
+                    "fields": [
+                        {
+                            "name": "team_id",
+                            "type": "number",
+                            "required": False
+                        },
+                        {
+                            "name": "name",
+                            "type": "text",
+                            "required": False
+                        },
+                        {
+                            "name": "link",
+                            "type": "text",
+                            "required": False
+                        },
+                        {
+                            "name": "table",
+                            "type": "text",
+                            "required": False
+                        },
+                        {
+                            "name": "members",
+                            "type": "text",
+                            "required": False
+                        },
+                        {
+                            "name": "is_anchor",
+                            "type": "checkbox",
+                            "required": False
+                        }
+                    ]
+                },
+                {
+                    "name": "api:team_update",
+                    "method": "POST",
+                    "fields": [
+                        {
+                            "name": "team_id",
+                            "type": "number",
+                            "required": True
+                        },
+                        {
+                            "name": "name",
+                            "type": "text",
+                            "required": False
+                        },
+                        {
+                            "name": "link",
+                            "type": "text",
+                            "required": False
+                        },
+                        {
+                            "name": "table",
+                            "type": "text",
+                            "required": False
+                        },
+                        {
+                            "name": "members",
+                            "type": "text",
+                            "required": False
+                        },
+                        {
+                            "name": "is_anchor",
+                            "type": "checkbox",
+                            "required": False
+                        }
+                    ]
+                },
+                {
+                    "name": "api:team_delete",
+                    "method": "POST",
+                    "fields": [
+                        {
+                            "name": "team_id",
+                            "type": "number",
+                            "required": True
+                        }
+                    ]
+                }
+            ]
         }
     ]
 }
