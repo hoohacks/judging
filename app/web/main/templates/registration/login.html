@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+
+{% block title %}Log In{% endblock %}
+        
+{% block content %}
+<div class="container">
+    <div class="row">
+        <div class="col-sm-4">
+            <h1>Login</h1>
+            <div class="card">
+                <div class="card-body">
+                    <form method="POST">
+                        {% csrf_token %}
+                        {{ form.non_field_errors }}
+                        <div class="fieldWrapper">
+                            {{ form.username.errors }}
+                            <label for="{{ form.username.id_for_label }}">Username</label>
+                            {{ form.username }}
+                        </div>
+                        <div class="fieldWrapper">
+                            {{ form.password.errors }}
+                            <label for="{{ form.password.id_for_label }}">Password</label>
+                            {{ form.password }}
+                        </div>
+                        <input type="submit" class="btn btn-primary">
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
