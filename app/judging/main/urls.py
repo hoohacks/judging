@@ -31,4 +31,8 @@ urlpatterns = [
     path('criteria/search', views.criteria_search, name='criteria_search'),
     path('criteria/update', views.criteria_update, name='criteria_update'),
     path('criteria/delete', views.criteria_delete, name='criteria_delete'),
+    path('criteria_label/create', views.criteria_label_create, name='criteria_label_create'),
+    path('criteria_label/search', views.criteria_label_search, name='criteria_label_search'),
+    path('criteria_label/update', views.criteria_label_update, name='criteria_label_update'),
+    path('criteria_label/delete', views.criteria_label_delete, name='criteria_label_delete'),
 ]

@@ -573,6 +573,94 @@ context = {
                     ]
                 }
             ]
+        }, {
+            "name": "CriteriaLabel",
+            "forms": [
+                {
+                    "name": "api:criteria_label_create",
+                    "method": "POST",
+                    "fields": [
+                        {
+                            "name": "criteria_id",
+                            "type": "number",
+                            "required": True
+                        },
+                        {
+                            "name": "score",
+                            "type": "number",
+                            "required": True
+                        },
+                        {
+                            "name": "label",
+                            "type": "text",
+                            "required": True
+                        }
+                    ]
+                },
+                {
+                    "name": "api:criteria_label_search",
+                    "method": "GET",
+                    "fields": [
+                        {
+                            "name": "criteria_label_id",
+                            "type": "number",
+                            "required": False
+                        },
+                        {
+                            "name": "criteria_id",
+                            "type": "number",
+                            "required": False
+                        },
+                        {
+                            "name": "score",
+                            "type": "number",
+                            "required": False
+                        },
+                        {
+                            "name": "label",
+                            "type": "text",
+                            "required": False
+                        }
+                    ]
+                },
+                {
+                    "name": "api:criteria_label_update",
+                    "method": "POST",
+                    "fields": [
+                        {
+                            "name": "criteria_label_id",
+                            "type": "number",
+                            "required": True
+                        },
+                        {
+                            "name": "criteria_id",
+                            "type": "number",
+                            "required": False
+                        },
+                        {
+                            "name": "score",
+                            "type": "number",
+                            "required": False
+                        },
+                        {
+                            "name": "label",
+                            "type": "text",
+                            "required": False
+                        }
+                    ]
+                },
+                {
+                    "name": "api:criteria_label_delete",
+                    "method": "POST",
+                    "fields": [
+                        {
+                            "name": "criteria_label_id",
+                            "type": "number",
+                            "required": True
+                        }
+                    ]
+                }
+            ]
         }
     ]
 }
