@@ -9,6 +9,7 @@ from .api.team import *
 from .api.category import *
 from .api.criteria import *
 from .api.criteria_label import *
+from .api.demo import *
 from . import testpage
 
 

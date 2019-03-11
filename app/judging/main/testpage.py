@@ -661,6 +661,79 @@ context = {
                     ]
                 }
             ]
+        }, {
+            "name": "Demo",
+            "forms": [
+                {
+                    "name": "api:demo_create",
+                    "method": "POST",
+                    "fields": [
+                        {
+                            "name": "judge_id",
+                            "type": "number",
+                            "required": True
+                        },
+                        {
+                            "name": "team_id",
+                            "type": "number",
+                            "required": True
+                        }
+                    ]
+                },
+                {
+                    "name": "api:demo_search",
+                    "method": "GET",
+                    "fields": [
+                        {
+                            "name": "demo_id",
+                            "type": "number",
+                            "required": False
+                        },
+                        {
+                            "name": "judge_id",
+                            "type": "number",
+                            "required": False
+                        },
+                        {
+                            "name": "team_id",
+                            "type": "number",
+                            "required": False
+                        }
+                    ]
+                },
+                {
+                    "name": "api:demo_update",
+                    "method": "POST",
+                    "fields": [
+                        {
+                            "name": "demo_id",
+                            "type": "number",
+                            "required": True
+                        },
+                        {
+                            "name": "judge_id",
+                            "type": "number",
+                            "required": False
+                        },
+                        {
+                            "name": "team_id",
+                            "type": "number",
+                            "required": False
+                        }
+                    ]
+                },
+                {
+                    "name": "api:demo_delete",
+                    "method": "POST",
+                    "fields": [
+                        {
+                            "name": "demo_id",
+                            "type": "number",
+                            "required": True
+                        }
+                    ]
+                }
+            ]
         }
     ]
 }
