@@ -1,6 +1,7 @@
 import json
 
-from django.shortcuts import render
+from django.http import HttpResponse
+from django.shortcuts import render, redirect
 
 from .api import user
 from .api import organization
@@ -51,7 +52,7 @@ def dashboard(request):
     return HttpResponse('Judge dashboard')
 
 
-def evaluation(request):
+def evaluate(request):
     """Form judges use to evaluate submissions.
     
     If not logged in, redirects to index. If logged in, but the
