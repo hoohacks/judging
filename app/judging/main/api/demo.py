@@ -30,9 +30,9 @@ def demo_search(request):
     if 'demo_id' in kwargs:
         demos = demos.filter(pk=kwargs['demo_id'])
     if 'judge_id' in kwargs:
-        demos = demos.filter(judge__id__exact=kwargs['name'])
+        demos = demos.filter(judge__id__exact=kwargs['judge_id'])
     if 'team_id' in kwargs:
-        demos = demos.filter(team__id__exact=kwargs['name'])
+        demos = demos.filter(team__id__exact=kwargs['team_id'])
 
     results = {
         'results': [model_to_dict(demo) for demo in demos]
