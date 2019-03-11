@@ -103,8 +103,7 @@ context = {
                     ]
                 },
             ]
-        },
-        {
+        }, {
             "name": "Organization",
             "forms": [
                 {
@@ -162,8 +161,7 @@ context = {
                     ]
                 }
             ]
-        },
-        {
+        }, {
             "name": "Event",
             "forms": [
                 {
@@ -466,6 +464,109 @@ context = {
                     "fields": [
                         {
                             "name": "category_id",
+                            "type": "number",
+                            "required": True
+                        }
+                    ]
+                }
+            ]
+        }, {
+            "name": "Criteria",
+            "forms": [
+                {
+                    "name": "api:criteria_create",
+                    "method": "POST",
+                    "fields": [
+                        {
+                            "name": "name",
+                            "type": "text",
+                            "required": True
+                        },
+                        {
+                            "name": "description",
+                            "type": "text",
+                            "required": False
+                        },
+                        {
+                            "name": "min_score",
+                            "type": "number",
+                            "required": False
+                        },
+                        {
+                            "name": "max_score",
+                            "type": "number",
+                            "required": False
+                        },
+                        {
+                            "name": "weight",
+                            "type": "str",
+                            "required": False
+                        },
+                    ]
+                },
+                {
+                    "name": "api:criteria_search",
+                    "method": "GET",
+                    "fields": [
+                        {
+                            "name": "criteria_id",
+                            "type": "number",
+                            "required": False
+                        },
+                        {
+                            "name": "name",
+                            "type": "text",
+                            "required": False
+                        },
+                        {
+                            "name": "description",
+                            "type": "text",
+                            "required": False
+                        },
+                    ]
+                },
+                {
+                    "name": "api:criteria_update",
+                    "method": "POST",
+                    "fields": [
+                        {
+                            "name": "criteria_id",
+                            "type": "number",
+                            "required": True
+                        },
+                        {
+                            "name": "name",
+                            "type": "text",
+                            "required": False
+                        },
+                        {
+                            "name": "description",
+                            "type": "text",
+                            "required": False
+                        },
+                        {
+                            "name": "min_score",
+                            "type": "number",
+                            "required": False
+                        },
+                        {
+                            "name": "max_score",
+                            "type": "number",
+                            "required": False
+                        },
+                        {
+                            "name": "weight",
+                            "type": "str",
+                            "required": False
+                        },
+                    ]
+                },
+                {
+                    "name": "api:criteria_delete",
+                    "method": "POST",
+                    "fields": [
+                        {
+                            "name": "criteria_id",
                             "type": "number",
                             "required": True
                         }

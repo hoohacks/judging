@@ -27,4 +27,8 @@ urlpatterns = [
     path('category/delete', views.category_delete, name='category_delete'),
     path('category/add_team', views.category_add_team, name='category_add_team'),
     path('category/remove_team', views.category_remove_team, name='category_remove_team'),
+    path('criteria/create', views.criteria_create, name='criteria_create'),
+    path('criteria/search', views.criteria_search, name='criteria_search'),
+    path('criteria/update', views.criteria_update, name='criteria_update'),
+    path('criteria/delete', views.criteria_delete, name='criteria_delete'),
 ]

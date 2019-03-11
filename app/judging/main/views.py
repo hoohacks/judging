@@ -7,6 +7,7 @@ from .api.organization import *
 from .api.event import *
 from .api.team import *
 from .api.category import *
+from .api.criteria import *
 from . import testpage
 
 
