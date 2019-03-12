@@ -84,10 +84,19 @@ def dashboard(request):
         return redirect('profile')
 
     if request.method == 'GET':
+        demos = Demo.search(judge_id=request.user.id)
+        demo_queue = []
+        past_demos = []
+        for demo in demos:
+            if Demo.completed(demo.id):
+                past_demos.append(demo)
+            else:
+                demo_queue.append(demo)
+
         context = {
             'user': request.user,
-            'demo_queue': [],
-            'past_demos': [],
+            'demo_queue': demo_queue,
+            'past_demos': past_demos,
         }
         return render(request, 'judge/dashboard.html', context)
 

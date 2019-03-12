@@ -8,7 +8,21 @@
         <div class="col-sm-6">
             <h1>Hi {{ user.first_name }}</h1>
             <a href="{% url 'profile' %}">Update profile</a>
+            <br>
             <a href="{% url 'evaluate' %}">Form</a>
+            <br>
+            <a href="{% url 'logout' %}">Log out</a>
+            <br>
+            <h2>Demo Queue</h2>
+            {% for demo in demo_queue %}
+            <p>[Table {{ demo.team.table }}] {{ demo.team.name }}</p>
+            {% endfor %}
+            <br>
+            <h2>Past Demos</h2>
+            {% for demo in past_demos %}
+            <p>[Table {{ demo.team.table }}] {{ demo.team.name }}</p>
+            {% endfor %}
+
             
             {% if user.is_staff %}
             <form method="POST" action="{% url 'assign_demos' %}">

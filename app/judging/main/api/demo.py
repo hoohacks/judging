@@ -2,7 +2,9 @@ from django.forms.models import model_to_dict
 from django.shortcuts import render
 
 
-from ..models import Demo, Team, User
+from ..models import Demo
+from . import demo_score as DemoScore
+from . import criteria as Criteria
 from ..utils.api import *
 
 
@@ -38,6 +40,14 @@ def search(demo_id: int = None, judge_id: int = None, team_id: int = None):
 
 def exists(judge_id: int, team_id: int):
     return len(search(judge_id=judge_id, team_id=team_id)) > 0
+
+
+def completed(demo_id: int):
+    criteria = Criteria.search()
+    for criterion in criteria:
+        if len(DemoScore.search(demo_id=demo_id, criteria_id=criterion.id)) == 0:
+            return False
+    return True
 
 
 def update(demo_id: int, judge_id: int = None, team_id: int = None):
