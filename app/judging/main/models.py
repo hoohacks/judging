@@ -16,9 +16,15 @@ from django.contrib.auth.models import AbstractUser
 class Event(models.Model):
     name = models.CharField(max_length=100)
 
+    def __str__(self):
+        return self.name
+
 
 class Organization(models.Model):
     name = models.CharField(max_length=100, unique=True)
+
+    def __str__(self):
+        return self.name
 
 
 class Team(models.Model):
@@ -28,6 +34,9 @@ class Team(models.Model):
     link = models.URLField()
     is_anchor = models.BooleanField(default=False)
 
+    def __str__(self):
+        return '[ID#{}] {}'.format(self.id, self.name)
+
 
 class Category(models.Model):
     name = models.CharField(max_length=100)
@@ -35,6 +44,12 @@ class Category(models.Model):
     organization = models.ForeignKey(Organization, on_delete=models.CASCADE)
     number_winners = models.IntegerField(default=1)
     submissions = models.ManyToManyField(Team, related_name='categories')
+
+    def __str__(self):
+        return '[{}] {}'.format(self.organization.name, self.name)
+
+    class Meta:
+        verbose_name_plural = "categories"
 
 
 class User(AbstractUser):
@@ -62,19 +77,31 @@ class Criteria(models.Model):
     max_score = models.IntegerField(default=5)
     weight = models.DecimalField(default=1, decimal_places=2, max_digits=4)
 
+    def __str__(self):
+        return self.name
+
 
 class CriteriaLabel(models.Model):
     criteria = models.ForeignKey(Criteria, on_delete=models.CASCADE)
     score = models.IntegerField()
     label = models.CharField(max_length=255)
 
+    def __str__(self):
+        return '[{} - {}] {}'.format(self.criteria.name, self.score, self.label)
+
 
 class Demo(models.Model):
     judge = models.ForeignKey(User, on_delete=models.CASCADE)
     team = models.ForeignKey(Team, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return '{} - {}'.format(self.judge, self.team.name)
 
 
 class DemoScore(models.Model):
     demo = models.ForeignKey(Demo, on_delete=models.CASCADE)
     criteria = models.ForeignKey(Criteria, on_delete=models.CASCADE)
     value = models.IntegerField()
+
+    def __str__(self):
+        return '{} = {} - {}'.format(self.demo, self.criteria.name, self.value)
