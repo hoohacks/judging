@@ -3,5 +3,14 @@
 {% block title %}Dashboard{% endblock %}
 
 {% block content %}
-<h1>Dashboard</h1>
-{% endblock %}   
+<div class="container">
+    <div class="row">
+        <div class="col-sm-6">
+            <h1>Hi {{ user.first_name }}</h1>
+            <a href="{% url 'profile' %}">Update profile</a>
+            <a href="{% url 'evaluate' %}">Form</a>
+            {{ profile_complete }}
+        </div>
+    </div>
+</div>
+{% endblock %}

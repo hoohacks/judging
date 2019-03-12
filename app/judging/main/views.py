@@ -79,8 +79,15 @@ def dashboard(request):
     the profile is complete, render page.
 
     """
+    if not request.user.is_profile_complete():
+        return redirect('profile')
+
     if request.method == 'GET':
-        context = {}  # TODO: add context
+        context = {
+            'user': request.user,
+            'demo_queue': [],
+            'past_demos': [],
+        }
         return render(request, 'judge/dashboard.html', context)
 
 

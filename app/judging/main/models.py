@@ -40,6 +40,14 @@ class Category(models.Model):
 class User(AbstractUser):
     organization = models.ForeignKey(Organization, on_delete=models.CASCADE, null=True, blank=True)
 
+    def is_profile_complete(self):
+        if self.is_staff or self.is_superuser:
+            return True
+        return all([bool(self.organization),
+                    bool(self.username),
+                    bool(self.first_name),
+                    bool(self.last_name)])
+
     def __str__(self):
         org_name = 'None'
         if self.organization:
