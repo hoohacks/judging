@@ -1,8 +1,10 @@
 import json
 
+from django.contrib.auth import login, authenticate
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse
 from django.shortcuts import render, redirect
+
 
 from .api import user
 from .api import organization
@@ -13,6 +15,7 @@ from .api import criteria
 from .api import criteria_label
 from .api import demo
 from .api import demo_score
+from .forms.registration import RegistrationForm
 
 
 def index(request):
@@ -37,11 +40,19 @@ def register(request):
         return redirect('dashboard')
 
     if request.method == 'GET':
-        context = {}  # TODO: add form
-        return render(request, 'registration/register.html')
+        context = {'form': RegistrationForm()}
+        return render(request, 'registration/register.html', context)
     elif request.method == 'POST':
-        # TODO: create and login user
+        form = RegistrationForm(request.POST)
+        if not form.is_valid():
+            redirect('register')
+        form.save()  # create user
+        username = form.cleaned_data.get('username')
+        password = form.cleaned_data.get('password1')
+        user = authenticate(username=username, password=password)
+        login(request, user)
         return redirect('dashboard')
+    return redirect('register')
 
 
 @login_required

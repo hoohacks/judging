@@ -3,5 +3,16 @@
 {% block title %}Register{% endblock %}
 
 {% block content %}
-<h1>Register</h1>
+<div class="container">
+    <div class="row">
+        <div class="col-sm-6">
+            <h1>Register</h1>
+            <form method="POST">
+                {% csrf_token %}
+                {{ form }}
+                <input type="submit" class="btn btn-primary">
+            </form>
+        </div>
+    </div>
+</div>
 {% endblock %}   
