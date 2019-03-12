@@ -29,7 +29,7 @@ class Organization(models.Model):
 
 class Team(models.Model):
     name = models.CharField(max_length=255)
-    table = models.CharField(max_length=15, blank=True, unique=True)
+    table = models.CharField(max_length=15, blank=True)
     members = models.CharField(max_length=255, blank=True)
     link = models.URLField(blank=True)
     is_anchor = models.BooleanField(default=False)
@@ -43,7 +43,7 @@ class Category(models.Model):
     description = models.TextField(blank=True)
     organization = models.ForeignKey(Organization, on_delete=models.CASCADE)
     number_winners = models.IntegerField(default=1)
-    submissions = models.ManyToManyField(Team, related_name='categories')
+    submissions = models.ManyToManyField(Team, related_name='categories', blank=True)
 
     def __str__(self):
         return '[{}] {}'.format(self.organization.name, self.name)
