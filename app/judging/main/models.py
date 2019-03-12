@@ -29,9 +29,9 @@ class Organization(models.Model):
 
 class Team(models.Model):
     name = models.CharField(max_length=255)
-    table = models.CharField(max_length=15)
-    members = models.CharField(max_length=255)
-    link = models.URLField()
+    table = models.CharField(max_length=15, blank=True, unique=True)
+    members = models.CharField(max_length=255, blank=True)
+    link = models.URLField(blank=True)
     is_anchor = models.BooleanField(default=False)
 
     def __str__(self):

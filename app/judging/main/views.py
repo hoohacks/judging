@@ -1,3 +1,4 @@
+from collections import deque
 import re
 
 from django.contrib.auth import login, authenticate
@@ -122,10 +123,14 @@ def evaluate(request):
             # include errors and prefill
             return render(request, 'judge/evaluate.html')
 
-        # Create demo
+        # Get or create demo
         judge_id = request.user.id
         team_id = request.POST.get('team')
-        demo = Demo.create(judge_id, team_id)
+        demos = Demo.search(judge_id=judge_id, team_id=team_id)
+        if len(demos) > 0:
+            demo = demos[0]
+        else:
+            demo = Demo.create(judge_id, team_id)
         
         # Assign scores in demo
         for criteria_id, score in scores.items():
@@ -133,3 +138,38 @@ def evaluate(request):
 
         # TODO: submit demo if judging is open
         return redirect('evaluate')
+
+
+
+@login_required
+def assign_demos(request):
+    """Assign demos to judges.
+    
+    Only staff can assign demos. There are a few rules to
+    follow when assigning demos, listed below.
+
+    Implemented
+    - All teams must be seen by at least _1_ judge
+
+    Not Implemented
+    - Every judge must see at least _1_ team
+    - No judge can see more than _20_ teams
+    - Judges should get demos in as _few_ categories as possible.
+    """
+    teams = Team.search()
+    judges = User.search(is_staff=False)
+
+    team_q = deque(teams)
+    judge_q = deque(judges)
+    while len(team_q) > 0:
+        team = team_q.pop()
+        judge = judge_q.pop()
+        if not Demo.exists(judge.id, team.id):
+            Demo.create(judge.id, team.id)
+        judge_q.appendleft(judge)
+
+    return JsonResponse({
+        'teams': list(teams.values()),
+        'judges': list(judges.values()),
+        'demos': list(Demo.search().values())
+    })

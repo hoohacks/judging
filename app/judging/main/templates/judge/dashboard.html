@@ -9,7 +9,13 @@
             <h1>Hi {{ user.first_name }}</h1>
             <a href="{% url 'profile' %}">Update profile</a>
             <a href="{% url 'evaluate' %}">Form</a>
-            {{ profile_complete }}
+            
+            {% if user.is_staff %}
+            <form method="POST" action="{% url 'assign_demos' %}">
+                {% csrf_token %}
+                <input type="submit" class="btn btn-primary" value="Assign Demos">
+            </form>
+            {% endif %}
         </div>
     </div>
 </div>

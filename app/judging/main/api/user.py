@@ -60,7 +60,7 @@ def search(user_id: int = None,
     if 'last_name' in kwargs:
         users = users.filter(last_name__icontains=kwargs['last_name'])
     if 'is_staff' in kwargs:
-        users = users.filter(username__exact=kwargs['is_staff'])
+        users = users.filter(is_staff__exact=kwargs['is_staff'])
     if 'organization_id' in kwargs:
         users = users.filter(organization__id__exact=kwargs['organization_id'])
 

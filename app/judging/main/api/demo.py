@@ -36,6 +36,10 @@ def search(demo_id: int = None, judge_id: int = None, team_id: int = None):
     return demos
 
 
+def exists(judge_id: int, team_id: int):
+    return len(search(judge_id=judge_id, team_id=team_id)) > 0
+
+
 def update(demo_id: int, judge_id: int = None, team_id: int = None):
     kwargs = locals()
     fields = {
