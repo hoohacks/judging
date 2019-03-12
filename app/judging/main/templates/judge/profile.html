@@ -3,5 +3,17 @@
 {% block title %}Profile{% endblock %}
 
 {% block content %}
-<h1>Profile</h1>
-{% endblock %}   
+<div class="container">
+    <div class="row">
+        <div class="col-sm-6">
+            <h1>Profile</h1>
+            <form method="POST">
+                {% csrf_token %}
+                {{ form.non_field_errors }}
+                {{ form }}
+                <input type="submit" class="btn btn-primary">
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

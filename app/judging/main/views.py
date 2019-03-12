@@ -2,7 +2,7 @@ import json
 
 from django.contrib.auth import login, authenticate
 from django.contrib.auth.decorators import login_required
-from django.http import HttpResponse
+from django.http import HttpResponse, JsonResponse
 from django.shortcuts import render, redirect
 
 
@@ -16,6 +16,7 @@ from .api import criteria_label
 from .api import demo
 from .api import demo_score
 from .forms.registration import RegistrationForm
+from .forms.profile import UpdateProfileForm
 
 
 def index(request):
@@ -59,11 +60,14 @@ def register(request):
 def profile(request):
     """Profile creation/edit page for judges."""
     if request.method == 'GET':
-        context = {}  # TODO: add form
-        return render(request, 'judge/profile.html')
+        context = {'form': UpdateProfileForm(instance=request.user)}  # TODO: add form
+        return render(request, 'judge/profile.html', context)
     elif request.method == 'POST':
-        # TODO: update user
-        return redirect('profile')
+        form = UpdateProfileForm(request.POST, instance=request.user)
+        if form.is_valid():
+            form.save()
+        context = {'form': form}
+        return render(request, 'judge/profile.html', context)
 
 
 @login_required
