@@ -18,6 +18,7 @@ from .api import demo as Demo
 from .api import demo_score as DemoScore
 from .forms.registration import RegistrationForm
 from .forms.profile import UpdateProfileForm
+from .forms.evaluation import EvaluationForm
 
 
 def index(request):
@@ -111,19 +112,37 @@ def evaluate(request):
     form submissions.
     """
     if request.method == 'GET':
+        initial = {}
+        if request.GET.get('team'):
+            # Get team, if specified
+            team_id = request.GET.get('team')
+            teams = Team.search(team_id=team_id)
+            if len(teams) > 0:
+                team = teams[0]
+
+                # Get any initial data
+                initial['team'] = team.id
+                demos = Demo.search(judge_id=request.user.id, team_id=team_id)
+                if len(demos) > 0:
+                    demo = demos[0]
+
+                    demo_scores = DemoScore.search(demo_id=demo.id)
+                    for demo_score in demo_scores:
+                        field_name = 'criteria-{}'.format(demo_score.criteria.id)
+                        initial[field_name] = demo_score.value
+
+        form = EvaluationForm(initial=initial)
         context = {
-            'criteria': Criteria.search(),
-            'criteria_label': CriteriaLabel.search(),
-            'teams': Team.search(),
+            'form': form
         }
         return render(request, 'judge/evaluate.html', context)
     elif request.method == 'POST':
         # Parse scores
         scores = {}
-        prog = re.compile('^criterion-\d+$')
+        prog = re.compile('^criteria-\d+$')
         for key, score in request.POST.dict().items():
             if prog.match(key):
-                criteria_id = int(key[len('criterion-'):])
+                criteria_id = int(key[len('criteria-'):])
                 scores[criteria_id] = score
 
         # Ensure all parts are complete
@@ -146,7 +165,7 @@ def evaluate(request):
             DemoScore.create(demo.id, criteria_id, score)
 
         # TODO: submit demo if judging is open
-        return redirect('evaluate')
+        return redirect('dashboard')
 
 
 

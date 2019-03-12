@@ -20,7 +20,7 @@ services:
       cp node_modules/bootstrap/dist/js/bootstrap.bundle.min.js main/static/js/bootstrap.bundle.min.js &&
       cp node_modules/jquery/dist/jquery.slim.min.js main/static/js/jquery.slim.min.js;
       python manage.py migrate;
-      python manage.py loaddata main/fixtures/db.json;
+      python manage.py loaddata main/fixtures/dev.json;
       python manage.py collectstatic --noinput;
       mod_wsgi-express start-server
         --working-directory /app/judging

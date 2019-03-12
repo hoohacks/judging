@@ -15,12 +15,12 @@
             <br>
             <h2>Demo Queue</h2>
             {% for demo in demo_queue %}
-            <p>[Table {{ demo.team.table }}] {{ demo.team.name }}</p>
+            <a href="{% url 'evaluate' %}?team={{ demo.team.id }}">[Table {{ demo.team.table }}] {{ demo.team.name }}</a>
             {% endfor %}
             <br>
             <h2>Past Demos</h2>
             {% for demo in past_demos %}
-            <p>[Table {{ demo.team.table }}] {{ demo.team.name }}</p>
+            <a href="{% url 'evaluate' %}?team={{ demo.team.id }}">[Table {{ demo.team.table }}] {{ demo.team.name }}</a>
             {% endfor %}
 
             

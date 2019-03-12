@@ -152,13 +152,24 @@ PIPELINE = {
         }
     },
     'JAVASCRIPT': {
-        'main': {
+        'bootstrap': {
             'source_filenames': {
-                'js/jquery.slim.min.js',
                 'js/bootstrap.bundle.min.js',
             },
+            'output_filename': 'js/bootstrap.js'
+        },
+        'jquery': {
+            'source_filenames': {
+                'js/jquery.slim.min.js',
+            },
+            'output_filename': 'js/jquery.js'
+        },
+        'main': {
+            'source_filenames': {
+                'js/evaluate.js',
+            },
             'output_filename': 'js/main.js'
-        }
+        },
     }
 }
 

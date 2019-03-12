@@ -1,0 +1,14 @@
+{% load index %}
+{% load to_int %}
+{% if widget.wrap_label %}
+<label class="btn btn-secondary"
+    {% if widget.attrs.id %}for="{{ widget.attrs.id }}"{% endif %}
+    {% with i=widget.index|to_int %}
+    title='{{ widget.attrs.labels|index:i }}'>
+    {% endwith %}
+{% endif %}
+{% include "django/forms/widgets/input.html" %}
+{% if widget.wrap_label %}
+{{ widget.label }}
+</label>
+{% endif %}
