@@ -148,7 +148,7 @@ def evaluate(request):
         # Ensure all parts are complete
         num_criteria_expected = len(Criteria.search())
         if len(scores) != num_criteria_expected:
-            # include errors and prefill
+            # initial = initial({})
             return render(request, 'judge/evaluate.html')
 
         # Get or create demo
@@ -162,7 +162,12 @@ def evaluate(request):
         
         # Assign scores in demo
         for criteria_id, score in scores.items():
-            DemoScore.create(demo.id, criteria_id, score)
+            if not DemoScore.exists(demo.id, criteria_id):
+                DemoScore.create(demo.id, criteria_id, score)
+            else:
+                demo_scores = DemoScore.search(demo_id=demo.id ,criteria_id=criteria_id)
+                demo_score = demo_scores[0]
+                DemoScore.update(demo_score.id, value=score)
 
         # TODO: submit demo if judging is open
         return redirect('dashboard')

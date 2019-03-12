@@ -44,6 +44,10 @@ def search(demo_score_id: int = None,
     return demo_scores
 
 
+def exists(demo_id: int, criteria_id: int):
+    return len(search(demo_id=demo_id, criteria_id=criteria_id)) > 0
+
+
 def update(demo_score_id: int,
            demo_id: int = None,
            criteria_id: int = None,
