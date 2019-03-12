@@ -43,6 +43,8 @@ def clean_fields(fields: Dict[str, Dict[str, Any]], params: QueryDict) -> Dict[s
     for _attr, _info in fields.items():
         if params.get(_attr) == None and _info['required']:
             raise ApiException(reason="{} field is required".format(_attr))
+        if params.get(_attr) == None and not _info['required']:
+            continue
 
         if _info['type'] == datetime.date:
             kwargs[_attr] = parse_date(params.get(_attr))

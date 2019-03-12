@@ -1,4 +1,4 @@
-import json
+import re
 
 from django.contrib.auth import login, authenticate
 from django.contrib.auth.decorators import login_required
@@ -6,15 +6,15 @@ from django.http import HttpResponse, JsonResponse
 from django.shortcuts import render, redirect
 
 
-from .api import user
-from .api import organization
-from .api import event
-from .api import team
-from .api import category
-from .api import criteria
-from .api import criteria_label
-from .api import demo
-from .api import demo_score
+from .api import user as User
+from .api import organization as Organization
+from .api import event as Event
+from .api import team as Team
+from .api import category as Category
+from .api import criteria as Criteria
+from .api import criteria_label as CriteriaLabel
+from .api import demo as Demo
+from .api import demo_score as DemoScore
 from .forms.registration import RegistrationForm
 from .forms.profile import UpdateProfileForm
 
@@ -101,8 +101,35 @@ def evaluate(request):
     form submissions.
     """
     if request.method == 'GET':
-        context = {}  # TODO: add form
-        return render(request, 'judge/evaluate.html')
+        context = {
+            'criteria': Criteria.search(),
+            'criteria_label': CriteriaLabel.search(),
+            'teams': Team.search(),
+        }
+        return render(request, 'judge/evaluate.html', context)
     elif request.method == 'POST':
+        # Parse scores
+        scores = {}
+        prog = re.compile('^criterion-\d+$')
+        for key, score in request.POST.dict().items():
+            if prog.match(key):
+                criteria_id = int(key[len('criterion-'):])
+                scores[criteria_id] = score
+
+        # Ensure all parts are complete
+        num_criteria_expected = len(Criteria.search())
+        if len(scores) != num_criteria_expected:
+            # include errors and prefill
+            return render(request, 'judge/evaluate.html')
+
+        # Create demo
+        judge_id = request.user.id
+        team_id = request.POST.get('team')
+        demo = Demo.create(judge_id, team_id)
+        
+        # Assign scores in demo
+        for criteria_id, score in scores.items():
+            DemoScore.create(demo.id, criteria_id, score)
+
         # TODO: submit demo if judging is open
         return redirect('evaluate')

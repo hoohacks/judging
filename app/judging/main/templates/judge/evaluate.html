@@ -3,5 +3,38 @@
 {% block title %}Evaluate{% endblock %}
 
 {% block content %}
-<h1>Evaluate</h1>
+
+<div class="container">
+    <div class="row">
+        <div class="col-sm-6">
+            <h1>Evaluate</h1>
+            <form id="evaluate-form" method="POST">
+                {% csrf_token %}
+                <div class="form-group">
+                    <select name="team">
+                        <option value=""></option>
+                        {% for team in teams %}
+                        <option value="{{ team.id }}">{{ team.name }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                {% for criterion in criteria %}
+                    <div class="criterion btn-group btn-group-toggle" data-toggle="buttons">
+                    {{ criterion.name }}
+                    {% for i in i|rjust:criterion.max_score %}
+                        {% with n=forloop.counter|add:criterion.min_score|add:"-1" %}
+                        <label class="btn btn-secondary">
+                            <input type="radio" name="criterion-{{ criterion.id }}" value="{{ n }}" autocomplete="off" required>
+                            {{ n }}
+                        </label>
+                        {% endwith %}
+                    {% endfor %}
+                    </div>
+                    <br>
+                {% endfor %}
+                <input id="evaluate-submit" type="submit" class="btn btn-primary">
+            </form>
+        </div>
+    </div>
+</div>
 {% endblock %}   

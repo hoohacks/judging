@@ -14,13 +14,16 @@ services:
       - "5082:8000"
     depends_on:
       - db
+    working_dir: /app/judging
     command: bash -c "npm install;
       while !</dev/tcp/db/5432; do sleep 1; done;
-      python /app/judging/manage.py migrate;
-      python /app/judging/manage.py loaddata /app/judging/main/fixtures/db.json;
-      python /app/judging/manage.py collectstatic --noinput;
+      cp node_modules/bootstrap/dist/js/bootstrap.bundle.min.js main/static/js/bootstrap.bundle.min.js &&
+      cp node_modules/jquery/dist/jquery.slim.min.js main/static/js/jquery.slim.min.js;
+      python manage.py migrate;
+      python manage.py loaddata main/fixtures/db.json;
+      python manage.py collectstatic --noinput;
       mod_wsgi-express start-server
         --working-directory /app/judging
-        --url-alias /static /app/judging/staticfiles
+        --url-alias /static staticfiles
         --reload-on-changes
-        /app/judging/judging/wsgi.py"
+        judging/wsgi.py"

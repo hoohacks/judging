@@ -150,6 +150,15 @@ PIPELINE = {
             },
             'output_filename': 'css/main.css'
         }
+    },
+    'JAVASCRIPT': {
+        'main': {
+            'source_filenames': {
+                'js/jquery.slim.min.js',
+                'js/bootstrap.bundle.min.js',
+            },
+            'output_filename': 'js/main.js'
+        }
     }
 }
 

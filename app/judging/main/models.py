@@ -57,7 +57,7 @@ class User(AbstractUser):
 
 class Criteria(models.Model):
     name = models.CharField(max_length=100)
-    description = models.TextField()
+    description = models.TextField(blank=True)
     min_score = models.IntegerField(default=1)
     max_score = models.IntegerField(default=5)
     weight = models.DecimalField(default=1, decimal_places=2, max_digits=4)
