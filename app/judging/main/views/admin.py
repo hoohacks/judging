@@ -173,9 +173,12 @@ def assign_tables(request):
 
     if request.method == 'POST':
         teams = Team.search().order_by('id')
+        num_digits = len(str(len(teams)))
         table_cnt = 1
         for team in teams:
-            Team.update(team.id, table=table_cnt)
+            zeros_needed = num_digits - len(str(table_cnt))
+            table_number = zeros_needed * '0' + str(table_cnt)
+            Team.update(team.id, table=table_number)
             table_cnt += 1
         return redirect('dashboard')
     return redirect('dashboard')
