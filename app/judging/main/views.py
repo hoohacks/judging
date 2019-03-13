@@ -91,7 +91,7 @@ def dashboard(request):
             context = {
                 'user': request.user,
                 'demos': Demo.search(),
-                'judges': User.search(is_staff=False),
+                'judges': User.search(is_judge=True),
             }
             return render(request, 'admin/dashboard.html', context)
         else:
@@ -205,7 +205,7 @@ def assign_demos(request):
 
     if request.method == 'POST':
         teams = Team.search()
-        judges = User.search(is_staff=False)
+        judges = User.search(is_judge=True)
 
         team_q = deque(teams)
         judge_q = deque(judges)

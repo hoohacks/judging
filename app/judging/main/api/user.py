@@ -38,7 +38,8 @@ def search(user_id: int = None,
            last_name: str = None,
            username: str = None,
            organization_id: int = None,
-           is_staff: bool = None):
+           is_staff: bool = None,
+           is_judge: bool = None):
     kwargs = locals()
     fields = {
         'user_id': {'required': False, 'type': int},
@@ -46,6 +47,7 @@ def search(user_id: int = None,
         'first_name': {'required': False, 'type': str},
         'last_name': {'required': False, 'type': str},
         'is_staff': {'required': False, 'type': bool},
+        'is_judge': {'required': False, 'type': bool},
         'organization_id': {'required': False, 'type': int},
     }
     kwargs = clean_fields(fields, kwargs)
@@ -63,6 +65,9 @@ def search(user_id: int = None,
         users = users.filter(is_staff__exact=kwargs['is_staff'])
     if 'organization_id' in kwargs:
         users = users.filter(organization__id__exact=kwargs['organization_id'])
+    if 'is_judge' in kwargs:
+        users = users.filter(organization__isnull=False)
+        users = users.filter(is_staff__exact=False)
 
     return users
 
