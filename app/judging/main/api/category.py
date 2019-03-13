@@ -10,7 +10,8 @@ def create(name: str,
                     organization_id: int,
                     description: str = None,
                     number_winners: int = None,
-                    is_opt_in: bool = None):
+                    is_opt_in: bool = None,
+                    can_anyone_judge: bool = None):
     kwargs = locals()
     fields = {
         'name': {'required': True, 'type': str},
@@ -18,6 +19,7 @@ def create(name: str,
         'description': {'required': False, 'type': str},
         'number_winners': {'required': False, 'type': int},
         'is_opt_in': {'required': False, 'type': bool},
+        'can_anyone_judge': {'required': False, 'type': bool},
     }
     kwargs = clean_fields(fields, kwargs)
     category = Category.objects.create(**kwargs)
@@ -30,7 +32,8 @@ def search(
         description: str = None,
         organization_id: int = None,
         number_winners: int = None,
-        is_opt_in: bool = None):
+        is_opt_in: bool = None,
+        can_anyone_judge: bool = None):
     kwargs = locals()
     fields = {
         'category_id': {'required': False, 'type': int},
@@ -39,6 +42,7 @@ def search(
         'organization_id': {'required': False, 'type': int},
         'number_winners': {'required': False, 'type': int},
         'is_opt_in': {'required': False, 'type': bool},
+        'can_anyone_judge': {'required': False, 'type': bool},
     }
     kwargs = clean_fields(fields, kwargs)
 
@@ -59,6 +63,9 @@ def search(
     if 'is_opt_in' in kwargs:
         categories = categories.filter(
             is_opt_in__exact=kwargs['is_opt_in'])
+    if 'can_anyone_judge' in kwargs:
+        categories = categories.filter(
+            can_anyone_judge__exact=kwargs['can_anyone_judge'])
     return categories
 
 
@@ -68,7 +75,8 @@ def update(
         description: str = None,
         organization_id: int = None,
         number_winners: int = None,
-        is_opt_in: bool = None):
+        is_opt_in: bool = None,
+        can_anyone_judge: bool = None):
     kwargs = locals()
     fields = {
         'category_id': {'required': True, 'type': int},
@@ -77,6 +85,7 @@ def update(
         'organization_id': {'required': False, 'type': int},
         'number_winners': {'required': False, 'type': int},
         'is_opt_in': {'required': False, 'type': bool},
+        'can_anyone_judge': {'required': False, 'type': bool},
     }
     kwargs = clean_fields(fields, kwargs)
 
