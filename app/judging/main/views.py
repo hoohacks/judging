@@ -3,6 +3,7 @@ import re
 import csv
 from io import StringIO
 
+from django.contrib import messages
 from django.contrib.auth import login, authenticate
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse, JsonResponse
@@ -70,8 +71,8 @@ def profile(request):
         form = UpdateProfileForm(request.POST, instance=request.user)
         if form.is_valid():
             form.save()
-        context = {'form': form}
-        return render(request, 'judge/profile.html', context)
+        return redirect('profile')
+    return redirect('profile')
 
 
 @login_required
@@ -110,6 +111,7 @@ def dashboard(request):
                 'past_demos': past_demos,
             }
             return render(request, 'judge/dashboard.html', context)
+    return redirect('dashboard')
 
 
 @login_required
@@ -158,8 +160,8 @@ def evaluate(request):
         # Ensure all parts are complete
         num_criteria_expected = len(Criteria.search())
         if len(scores) != num_criteria_expected:
-            # initial = initial({})
-            return render(request, 'judge/evaluate.html')
+            messages.error(request, 'All criteria must be graded')
+            return redirect('evaluate')
 
         # Get or create demo
         judge_id = request.user.id
@@ -199,23 +201,25 @@ def assign_demos(request):
     - No judge can see more than _20_ teams
     - Judges should get demos in as _few_ categories as possible.
     """
-    teams = Team.search()
-    judges = User.search(is_staff=False)
+    # TODO: restrict to staff
+    if not (request.user.is_staff or request.user.is_superuser):
+        return redirect('dashboard')
 
-    team_q = deque(teams)
-    judge_q = deque(judges)
-    while len(team_q) > 0:
-        team = team_q.pop()
-        judge = judge_q.pop()
-        if not Demo.exists(judge.id, team.id):
-            Demo.create(judge.id, team.id)
-        judge_q.appendleft(judge)
+    if request.method == 'POST':
+        teams = Team.search()
+        judges = User.search(is_staff=False)
 
-    return JsonResponse({
-        'teams': list(teams.values()),
-        'judges': list(judges.values()),
-        'demos': list(Demo.search().values())
-    })
+        team_q = deque(teams)
+        judge_q = deque(judges)
+        while len(team_q) > 0:
+            team = team_q.pop()
+            judge = judge_q.pop()
+            if not Demo.exists(judge.id, team.id):
+                Demo.create(judge.id, team.id)
+            judge_q.appendleft(judge)
+
+        return redirect('dashboard')
+    return redirect('dashboard')
 
 
 @login_required
@@ -229,13 +233,13 @@ def import_devpost(request):
 
         # check is a csv file
         if not csv_file.name.endswith('.csv'):
-            context['error'] = 'Did not receive a .csv'
-            return render(request, 'admin/devpost.html', context)
+            messages.error(request, 'Uploaded file must be a .csv')
+            return redirect('import_devpost')
 
         # check if file too large
         if csv_file.multiple_chunks():
-            context['error'] = 'Uh oh, file ({:.2f}MB) too large, max (2.5MB)'.format(csv_file.size/(1000*1000))
-            return redirect('import_devpost', context)
+            messages.error(request, 'Uh oh, file ({:.2f}MB) too large, max (2.5MB)'.format(csv_file.size/(1000*1000)))
+            return redirect('import_devpost')
         
         data = csv_file.read().decode("utf-8")
         reader = csv.reader(StringIO(data), csv.excel)
@@ -258,10 +262,11 @@ def import_devpost(request):
                 if len(categories) == 0:
                     organizers = Organization.search(name='organizers')[0]
                     category = Category.create(name=prize, organization_id=organizers.id, is_opt_in=True)
+                    messages.warning(request, '"{}" was created and assigned to "{}" by default'.format(prize, organizers.name))
                 else:
                     category = categories[0]  # TODO: more robust edge case checking
 
                 # add team to category
                 Category.add_team(category.id, team.id)
-        return render(request, 'admin/devpost.html', context)
-    return render(request, 'admin/devpost.html')
+        return redirect('import_devpost')
+    return redirect('import_devpost')
