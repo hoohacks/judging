@@ -1,0 +1,33 @@
+{% extends 'base.html' %}
+
+{% block title %}Admin Dashboard{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="row">
+        <div class="col-sm-6">
+            <h1>Hi {{ user.first_name }}</h1>
+            <a href="{% url 'profile' %}">Update profile</a>
+            <br>
+            <a href="{% url 'evaluate' %}">Form</a>
+            <br>
+            <a href="{% url 'logout' %}">Log out</a>
+            <br>
+            <a href="{% url 'import_devpost' %}">Import devpost</a>
+            <br>
+
+            <h2>Judges</h2>
+            <ul>
+                {% for judge in judges %}
+                <li>{{ judge }}</li>
+                {% endfor %}
+            </ul>
+
+            <form method="POST" action="{% url 'assign_demos' %}">
+                {% csrf_token %}
+                <input type="submit" class="btn btn-primary" value="Assign Demos">
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

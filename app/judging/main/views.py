@@ -1,5 +1,7 @@
 from collections import deque
 import re
+import csv
+from io import StringIO
 
 from django.contrib.auth import login, authenticate
 from django.contrib.auth.decorators import login_required
@@ -85,21 +87,29 @@ def dashboard(request):
         return redirect('profile')
 
     if request.method == 'GET':
-        demos = Demo.search(judge_id=request.user.id)
-        demo_queue = []
-        past_demos = []
-        for demo in demos:
-            if Demo.completed(demo.id):
-                past_demos.append(demo)
-            else:
-                demo_queue.append(demo)
+        if request.user.is_staff or request.user.is_superuser:
+            context = {
+                'user': request.user,
+                'demos': Demo.search(),
+                'judges': User.search(is_staff=False),
+            }
+            return render(request, 'admin/dashboard.html', context)
+        else:
+            demos = Demo.search(judge_id=request.user.id)
+            demo_queue = []
+            past_demos = []
+            for demo in demos:
+                if Demo.completed(demo.id):
+                    past_demos.append(demo)
+                else:
+                    demo_queue.append(demo)
 
-        context = {
-            'user': request.user,
-            'demo_queue': demo_queue,
-            'past_demos': past_demos,
-        }
-        return render(request, 'judge/dashboard.html', context)
+            context = {
+                'user': request.user,
+                'demo_queue': demo_queue,
+                'past_demos': past_demos,
+            }
+            return render(request, 'judge/dashboard.html', context)
 
 
 @login_required
@@ -206,3 +216,51 @@ def assign_demos(request):
         'judges': list(judges.values()),
         'demos': list(Demo.search().values())
     })
+
+
+@login_required
+def import_devpost(request):
+    if request.method == 'GET':
+        return render(request, 'admin/devpost.html')
+    if request.method == 'POST':
+        context = {}
+        # source: https://www.pythoncircle.com/post/30/how-to-upload-and-process-the-csv-file-in-django/
+        csv_file = request.FILES['devpost_csv']
+
+        # check is a csv file
+        if not csv_file.name.endswith('.csv'):
+            context['error'] = 'Did not receive a .csv'
+            return render(request, 'admin/devpost.html', context)
+
+        # check if file too large
+        if csv_file.multiple_chunks():
+            context['error'] = 'Uh oh, file ({:.2f}MB) too large, max (2.5MB)'.format(csv_file.size/(1000*1000))
+            return redirect('import_devpost', context)
+        
+        data = csv_file.read().decode("utf-8")
+        reader = csv.reader(StringIO(data), csv.excel)
+        headers = next(reader)
+        for row in reader:
+            prize = row[0]
+            project_name = row[1]
+            project_url = row[2]
+
+            # get or create team
+            teams = Team.search(link=project_url)
+            if len(teams) == 0:
+                team = Team.create(project_name, link=project_url)
+            else:
+                team = teams[0]
+
+            if prize != '':
+                # get category or break
+                categories = Category.search(name=prize)
+                if len(categories) == 0:
+                    context['error'] = 'Category "{}" does not exist'.format(prize)
+                    return render(request, 'admin/devpost.html', context)
+                category = categories[0]  # TODO: more robust edge case checking
+
+                # add team to category
+                Category.add_team(category.id, team.id)
+        return render(request, 'admin/devpost.html', context)
+    return render(request, 'admin/devpost.html')

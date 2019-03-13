@@ -9,13 +9,15 @@ from ..utils.api import *
 def create(name: str,
                     organization_id: int,
                     description: str = None,
-                    number_winners: int = None):
+                    number_winners: int = None,
+                    is_opt_in: bool = None):
     kwargs = locals()
     fields = {
         'name': {'required': True, 'type': str},
         'organization_id': {'required': True, 'type': int},
         'description': {'required': False, 'type': str},
         'number_winners': {'required': False, 'type': int},
+        'is_opt_in': {'required': False, 'type': bool},
     }
     kwargs = clean_fields(fields, kwargs)
     category = Category.objects.create(**kwargs)
@@ -27,7 +29,8 @@ def search(
         name: str = None,
         description: str = None,
         organization_id: int = None,
-        number_winners: int = None):
+        number_winners: int = None,
+        is_opt_in: bool = None):
     kwargs = locals()
     fields = {
         'category_id': {'required': False, 'type': int},
@@ -35,6 +38,7 @@ def search(
         'description': {'required': False, 'type': str},
         'organization_id': {'required': False, 'type': int},
         'number_winners': {'required': False, 'type': int},
+        'is_opt_in': {'required': False, 'type': bool},
     }
     kwargs = clean_fields(fields, kwargs)
 
@@ -52,6 +56,9 @@ def search(
     if 'number_winners' in kwargs:
         categories = categories.filter(
             number_winners__exact=kwargs['number_winners'])
+    if 'is_opt_in' in kwargs:
+        categories = categories.filter(
+            is_opt_in__exact=kwargs['is_opt_in'])
     return categories
 
 
@@ -60,7 +67,8 @@ def update(
         name: str = None,
         description: str = None,
         organization_id: int = None,
-        number_winners: int = None):
+        number_winners: int = None,
+        is_opt_in: bool = None):
     kwargs = locals()
     fields = {
         'category_id': {'required': True, 'type': int},
@@ -68,6 +76,7 @@ def update(
         'description': {'required': False, 'type': str},
         'organization_id': {'required': False, 'type': int},
         'number_winners': {'required': False, 'type': int},
+        'is_opt_in': {'required': False, 'type': bool},
     }
     kwargs = clean_fields(fields, kwargs)
 

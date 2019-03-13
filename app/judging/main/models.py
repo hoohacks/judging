@@ -43,6 +43,7 @@ class Category(models.Model):
     description = models.TextField(blank=True)
     organization = models.ForeignKey(Organization, on_delete=models.CASCADE)
     number_winners = models.IntegerField(default=1)
+    is_opt_in = models.BooleanField(default=False)
     submissions = models.ManyToManyField(Team, related_name='categories', blank=True)
 
     def __str__(self):
