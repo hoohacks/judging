@@ -102,6 +102,13 @@ class Demo(models.Model):
     judge = models.ForeignKey(User, on_delete=models.CASCADE)
     team = models.ForeignKey(Team, on_delete=models.CASCADE)
 
+    @property
+    def is_for_judge_category(self):
+        for category in self.team.categories.all():
+            if category.organization.id == self.judge.organization.id:
+                return True
+        return False
+
     def __str__(self):
         return '{} - {}'.format(self.judge, self.team.name)
 

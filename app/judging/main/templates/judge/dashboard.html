@@ -3,9 +3,9 @@
 {% block title %}Dashboard{% endblock %}
 
 {% block content %}
-<div class="container">
+<div id="judge-dashboard-container" class="container-fluid">
     <div class="row">
-        <div class="col-sm-6">
+        <div class="col">
             <h1>Hi {{ user.first_name }}</h1>
             <a href="{% url 'profile' %}">Update profile</a>
             <br>
@@ -13,25 +13,30 @@
             <br>
             <a href="{% url 'logout' %}">Log out</a>
             <br>
-            <h2>Demo Queue</h2>
-            {% for demo in demo_queue %}
-            <a href="{% url 'evaluate' %}?team={{ demo.team.id }}">[Table {{ demo.team.table }}] {{ demo.team.name }}</a>
-            <br>
-            {% endfor %}
-            <br>
-            <h2>Past Demos</h2>
-            {% for demo in past_demos %}
-            <a href="{% url 'evaluate' %}?team={{ demo.team.id }}">[Table {{ demo.team.table }}] {{ demo.team.name }}</a>
-            <br>
-            {% endfor %}
-
-            
-            {% if user.is_staff %}
-            <form method="POST" action="{% url 'assign_demos' %}">
-                {% csrf_token %}
-                <input type="submit" class="btn btn-primary" value="Assign Demos">
-            </form>
-            {% endif %}
+            <h5 class="mt-4">Demo Queue</h5>
+            <div class="link-list">
+                {% for demo in demo_queue %}
+                <div class="row list-element">
+                    <div class="col p-0">
+                        <a href="{% url 'evaluate' %}?team={{ demo.team.id }}" class="{% if demo.is_for_judge_category %}sponsor-left-border{% endif %}">
+                            <p class="m-0">Table {{ demo.team.table }} - {{ demo.team.name }}</p>
+                        </a>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+            <h5 class="mt-4">Past Demos</h5>
+            <div class="link-list">
+                {% for demo in past_demos %}
+                <div class="row list-element list-element-past">
+                    <div class="col p-0">
+                        <a href="{% url 'evaluate' %}?team={{ demo.team.id }}" class="{% if demo.is_for_judge_category %}sponsor-left-border{% endif %}">
+                            <p class="m-0">Table {{ demo.team.table }} - {{ demo.team.name }}</p>
+                        </a>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
         </div>
     </div>
 </div>

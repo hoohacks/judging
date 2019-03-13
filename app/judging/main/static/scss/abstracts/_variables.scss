@@ -1,0 +1,78 @@
+$primary-1: #202044;
+$primary-2: #2B2B60;
+$primary-3: #35367D;
+$primary-4: #404199;
+$primary-5: #4A4CB5;
+$primary-6: #7375C6;
+$primary-7: #9D9ED7;
+$primary-8: #C6C6E7;
+$primary-9: #EFEFF8;
+$primary-list: $primary-1 $primary-2 $primary-3 $primary-4 $primary-5 $primary-6 $primary-7 $primary-8 $primary-9;
+
+$neutral-1: #191919;
+$neutral-2: #343434;
+$neutral-3: #505050;
+$neutral-4: #6B6B6B;
+$neutral-5: #878787;
+$neutral-6: #A2A2A2;
+$neutral-7: #BDBDBD;
+$neutral-8: #D9D9D9;
+$neutral-9: #F4F4F4;
+$neutral-list: $neutral-1 $neutral-2 $neutral-3 $neutral-4 $neutral-5 $neutral-6 $neutral-7 $neutral-8 $neutral-9;
+
+$accent-success-1: #052F24;
+$accent-success-2: #084F3C;
+$accent-success-3: #0B6E54;
+$accent-success-4: #0E8D6D;
+$accent-success-5: #10ac84;
+$accent-success-6: #3BBB9A;
+$accent-success-7: #92D9C7;
+$accent-success-8: #A8E0D2;
+$accent-success-9: #D3EFE8;
+$accent-success-list: $accent-success-1 $accent-success-2 $accent-success-3 $accent-success-4 $accent-success-5 $accent-success-6 $accent-success-7 $accent-success-8 $accent-success-9;
+
+$accent-warn-1: #45381E;
+$accent-warn-2: #8B6F3C;
+$accent-warn-3: #D0A75B;
+$accent-warn-4: #F7C15D;
+$accent-warn-5: #FDCB6E;
+$accent-warn-6: #FDD488;
+$accent-warn-7: #FDDDA2;
+$accent-warn-8: #FEE7BD;
+$accent-warn-9: #FEF5E4;
+$accent-warn-list: $accent-warn-1 $accent-warn-2 $accent-warn-3 $accent-warn-4 $accent-warn-5 $accent-warn-6 $accent-warn-7 $accent-warn-8 $accent-warn-9;
+
+$accent-error-1: #4E1010;
+$accent-error-2: #611414;
+$accent-error-3: #881B1B;
+$accent-error-4: #AF2323;
+$accent-error-5: #D52A2A;
+$accent-error-6: #E06464;
+$accent-error-7: #E88A8A;
+$accent-error-8: #F3C4C4;
+$accent-error-9: #FBEBEB;
+$accent-error-list: $accent-error-1 $accent-error-2 $accent-error-3 $accent-error-4 $accent-error-5 $accent-error-6 $accent-error-7 $accent-error-8 $accent-error-9;
+
+$accent-highlight-1: #0D253D;
+$accent-highlight-2: #153D65;
+$accent-highlight-3: #1E568E;
+$accent-highlight-4: #266EB6;
+$accent-highlight-5: #2E86DE;
+$accent-highlight-6: #549CE4;
+$accent-highlight-7: #8DBDED;
+$accent-highlight-8: #C6DEF6;
+$accent-highlight-9: #D9E9F9;
+$accent-highlight-list: $accent-highlight-1 $accent-highlight-2 $accent-highlight-3 $accent-highlight-4 $accent-highlight-5 $accent-highlight-6 $accent-highlight-7 $accent-highlight-8 $accent-highlight-9;
+
+$theme-colors: (
+  "primary": $primary-5,
+  "secondary": $accent-highlight-5,
+  "success": $accent-success-5,
+  "info": $accent-highlight-5,
+  "warning": $accent-warn-5,
+  "danger": $accent-error-5,
+  "light": $neutral-1,
+  "dark": $neutral-8,
+);
+
+$enable-shadows: true;

@@ -1,0 +1,29 @@
+@import '../abstracts/variables';
+@import 'typography';
+
+
+html, body {
+    width: 100%;
+    height: 100%;
+    font-family: $base-font-family;
+    color: $primary-1;
+    background: $neutral-9;
+}
+
+h1 {
+    text-align: left;
+    font-weight: 700;
+    margin-bottom: 1.5rem;
+}
+
+h5 {
+    font-size: 1.125rem;
+    font-weight: 700;
+}
+
+h6 {
+    text-transform: uppercase;
+    color: $neutral-6;
+    font-size: 0.875rem;
+    font-weight: 700;
+}
