@@ -182,3 +182,48 @@ def assign_tables(request):
             table_cnt += 1
         return redirect('dashboard')
     return redirect('dashboard')
+
+
+
+@login_required
+def statistics(request):
+    """Assign tables to teams.
+
+    Only staff can assign teams.
+    """
+    if not (request.user.is_staff or request.user.is_superuser):
+        return redirect('dashboard')
+
+    if request.method == 'GET':
+        context = {}
+
+        judges = []
+        for judge in User.search(is_judge=True):
+            judges.append({
+                'name': str(judge),
+                'count': len(Demo.search(judge_id=judge.id))
+            })
+        context['judges'] = judges
+
+        statistics = []
+
+        num_judges = len(User.search(is_judge=True))
+        num_demos = len(Demo.search())
+        statistics.append({
+            'name': 'Number of judges',
+            'value': num_judges
+        })
+        statistics.append({
+            'name': 'Number of demos',
+            'value': num_demos
+        })
+        statistics.append({
+            'name': 'Average demos per judge',
+            'value': num_demos / num_judges
+        })
+
+
+
+        context['statistics'] = statistics
+        return render(request, 'admin/statistics.html', context)
+    return redirect('statistics')

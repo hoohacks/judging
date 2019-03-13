@@ -9,6 +9,7 @@ urlpatterns = [
     path('dashboard', views.dashboard, name='dashboard'),
     path('profile', views.profile, name='profile'),
     path('evaluate', views.evaluate, name='evaluate'),
+    path('statistics', views.statistics, name='statistics'),
     path('assign_demos', views.assign_demos, name='assign_demos'),
     path('assign_tables', views.assign_tables, name='assign_tables'),
     path('import_devpost', views.import_devpost, name='import_devpost'),
