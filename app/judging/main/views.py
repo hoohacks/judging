@@ -82,7 +82,6 @@ def dashboard(request):
     If not logged in, redirects to index. If logged in, but the
     profile is incomplete, redirect to profile. If logged in and
     the profile is complete, render page.
-
     """
     if not request.user.is_profile_complete():
         return redirect('profile')

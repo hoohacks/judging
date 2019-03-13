@@ -83,8 +83,9 @@ def update(user_id: int,
         'organization_id': {'required': False, 'type': int},
     }
     kwargs = clean_fields(fields, kwargs)
-    User.objects.filter(pk=kwargs['user_id']).update(**kwargs)
-    user = User.objects.get(pk=kwargs['user_id'])
+    user_id = kwargs.pop('user_id')
+    User.objects.filter(pk=user_id).update(**kwargs)
+    user = User.objects.get(pk=user_id)
     return user
 
 
