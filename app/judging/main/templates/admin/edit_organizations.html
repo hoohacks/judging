@@ -1,0 +1,52 @@
+{% extends 'base.html' %}
+
+{% block title %}Edit Organizations{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="row">
+        <div class="col-sm-6">
+            <a href="{% url 'dashboard' %}">Dashboard</a>
+            <h1>Edit Organizations</h1>
+
+            <ul class="messages">
+                {% for message in messages %}
+                <li {% if message.tags %}class="{{ message.tags }}"{% endif %}>
+                    {% if message.level == DEFAULT_MESSAGE_LEVELS.ERROR %}Important: {% endif %}
+                    {{ message }}
+                </li>
+                {% endfor %}
+            </ul>
+
+            <div id="organization-list">
+                {% for org in organizations %}
+                <div>
+                    <form class="p-1 submit-on-unfocus" method="POST" action="{% url 'update_organization' %}" data-delete-action="{% url 'delete_organization' %}">
+                        {% csrf_token %}
+                        <input type="hidden" value="{{ org.id }}" name="org_id" id="org_id">
+                        <div class="input-group">
+                            <input type="text" value="{{ org.name }}" name="org_name" class="form-control" required>
+                            <div class="input-group-append">
+                                <input type="button" class="btn btn-outline-danger org-delete-button" value="Delete">
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                {% endfor %}
+            </div>
+            <hr>
+            <div>
+                <form class="p-1 submit-on-enter" method="POST" action="{% url 'add_organization' %}">
+                    {% csrf_token %}
+                    <div class="input-group">
+                        <input type="text" name="org_name" class="form-control" placeholder="New organization..." required>
+                        <div class="input-group-append">
+                            <input type="submit" class="btn btn-outline-primary" value="Add">
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

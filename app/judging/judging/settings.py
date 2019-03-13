@@ -139,6 +139,7 @@ STATICFILES_FINDERS = [
 
 PIPELINE = {
     'PIPELINE_ENABLED': True,
+    'JS_COMPRESSOR': 'pipeline.compressors.NoopCompressor',
     'COMPILERS': [
         'pipeline.compilers.sass.SASSCompiler'
     ],
@@ -160,13 +161,14 @@ PIPELINE = {
         },
         'jquery': {
             'source_filenames': {
-                'js/jquery.slim.min.js',
+                'js/jquery.min.js',
             },
             'output_filename': 'js/jquery.js'
         },
         'main': {
             'source_filenames': {
                 'js/evaluate.js',
+                'js/edit_organizations.js',
             },
             'output_filename': 'js/main.js'
         },

@@ -18,7 +18,7 @@ services:
     command: bash -c "npm install;
       while !</dev/tcp/db/5432; do sleep 1; done;
       cp node_modules/bootstrap/dist/js/bootstrap.bundle.min.js main/static/js/bootstrap.bundle.min.js &&
-      cp node_modules/jquery/dist/jquery.slim.min.js main/static/js/jquery.slim.min.js;
+      cp node_modules/jquery/dist/jquery.min.js main/static/js/jquery.min.js;
       python manage.py migrate;
       python manage.py loaddata main/fixtures/dev.json;
       python manage.py collectstatic --noinput;

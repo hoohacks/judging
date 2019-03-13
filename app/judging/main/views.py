@@ -201,7 +201,6 @@ def assign_demos(request):
     - No judge can see more than _20_ teams
     - Judges should get demos in as _few_ categories as possible.
     """
-    # TODO: restrict to staff
     if not (request.user.is_staff or request.user.is_superuser):
         return redirect('dashboard')
 
@@ -270,3 +269,117 @@ def import_devpost(request):
                 Category.add_team(category.id, team.id)
         return redirect('import_devpost')
     return redirect('import_devpost')
+
+
+@login_required
+def edit_organizations(request):
+    if not (request.user.is_staff or request.user.is_superuser):
+        return redirect('dashboard')
+
+    if request.method == 'GET':
+        context = {
+            'organizations': Organization.search().order_by('name')
+        }
+        return render(request, 'admin/edit_organizations.html', context)
+    return redirect('edit_organizations')
+
+@login_required
+def update_organization(request):
+    response = {
+        'success': False,
+        'updated': False,
+        'reason': '',
+    }
+    if not (request.user.is_staff or request.user.is_superuser):
+        response['reason'] = 'Must be admin'
+        return JsonResponse(response)
+    
+    if request.method == 'POST':
+        org_id = request.POST.get('org_id', None)
+        org_name = request.POST.get('org_name', None)
+
+        if org_id == None or org_name == None:
+            response['reason'] = 'Must provide organization ID and name'
+            return JsonResponse(response)
+        
+        org_name = org_name.strip()
+        if org_name == '':
+            response['reason'] = 'Must provide organization name'
+            return JsonResponse(response)
+        
+        orgs = Organization.search(organization_id=org_id)
+        if len(orgs) == 0:
+            response['reason'] = 'Organization with ID {} not found'.format(org_id)
+            return JsonResponse(response)
+
+        original_name = orgs[0].name
+        org = Organization.update(org_id, org_name)
+        response['success'] = True
+        response['updated'] = original_name != org.name
+        response['reason'] = '"{}" changed to "{}"'.format(original_name, org.name)
+        return JsonResponse(response)
+    return JsonResponse(response)
+
+
+@login_required
+def add_organization(request):
+    response = {
+        'success': False,
+        'reason': ''
+    }
+    if not (request.user.is_staff or request.user.is_superuser):
+        response['reason'] = 'Must be admin'
+        return JsonResponse(response)
+    
+    if request.method == 'POST':
+        org_name = request.POST.get('org_name', None)
+        if org_name == None:
+            response['reason'] = 'Must provide organization name'
+            return JsonResponse(response)
+        
+        org_name = org_name.strip()
+        if org_name == '':
+            response['reason'] = 'Must provide organization name'
+            return JsonResponse(response)
+
+        orgs = Organization.search(name=org_name)
+        if len(orgs) > 0:
+            response['reason'] = 'Organization with same name already exists'
+            return JsonResponse(response)
+
+        org = Organization.create(org_name)
+        response['success'] = True
+        response['org'] = {
+            'id': org.id,
+            'name': org.name
+        }
+        response['reason'] = 'New organization called {} created'.format(org.name)
+        return JsonResponse(response)
+    return JsonResponse(response)
+
+
+@login_required
+def delete_organization(request):
+    response = {
+        'success': False,
+        'reason': ''
+    }
+    if not (request.user.is_staff or request.user.is_superuser):
+        response['reason'] = 'Must be admin'
+        return JsonResponse(response)
+    
+    if request.method == 'POST':
+        org_id = request.POST.get('org_id', None)
+        if org_id == None:
+            response['reason'] = 'Must provide organization ID'
+            return JsonResponse(response)
+
+        orgs = Organization.search(organization_id=org_id)
+        if len(orgs) == 0:
+            response['reason'] = 'Organization with ID {} not found'.format(org_id)
+            return JsonResponse(response)
+
+        Organization.delete(org_id)
+        response['success'] = True
+        return JsonResponse(response)
+    return JsonResponse(response)
