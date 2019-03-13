@@ -13,15 +13,17 @@ from django.db import models
 from django.contrib.auth.models import AbstractUser
 
 
-class Event(models.Model):
-    name = models.CharField(max_length=100)
+class Organization(models.Model):
+    name = models.CharField(max_length=100, unique=True)
 
     def __str__(self):
         return self.name
 
 
-class Organization(models.Model):
-    name = models.CharField(max_length=100, unique=True)
+class Event(models.Model):
+    name = models.CharField(max_length=100)
+    organizers = models.ForeignKey(
+        Organization, null=True, blank=True, on_delete=models.SET_NULL)
 
     def __str__(self):
         return self.name
@@ -43,10 +45,12 @@ class Category(models.Model):
     description = models.TextField(blank=True)
     organization = models.ForeignKey(Organization, on_delete=models.CASCADE)
     number_winners = models.IntegerField(default=1)
-    min_judges = models.IntegerField(default=1, help_text="The minimum number of judges a team should be seen by for this category")
+    min_judges = models.IntegerField(
+        default=1, help_text="The minimum number of judges a team should be seen by for this category")
     is_opt_in = models.BooleanField(default=False)
     can_anyone_judge = models.BooleanField(default=False)
-    submissions = models.ManyToManyField(Team, related_name='categories', blank=True)
+    submissions = models.ManyToManyField(
+        Team, related_name='categories', blank=True)
 
     def __str__(self):
         return '[{}] {}'.format(self.organization.name, self.name)
@@ -56,7 +60,8 @@ class Category(models.Model):
 
 
 class User(AbstractUser):
-    organization = models.ForeignKey(Organization, on_delete=models.CASCADE, null=True, blank=True)
+    organization = models.ForeignKey(
+        Organization, on_delete=models.CASCADE, null=True, blank=True)
 
     def is_profile_complete(self):
         if self.is_staff or self.is_superuser:

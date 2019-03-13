@@ -92,7 +92,7 @@ def dashboard(request):
             }
             return render(request, 'admin/dashboard.html', context)
         else:
-            demos = Demo.search(judge_id=request.user.id)
+            demos = Demo.search(judge_id=request.user.id).order_by('team__table')
             demo_queue = []
             past_demos = []
             for demo in demos:

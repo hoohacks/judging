@@ -1,6 +1,7 @@
 from collections import deque
 import csv
 from io import StringIO
+from queue import PriorityQueue
 
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
@@ -22,34 +23,73 @@ from ..api import demo_score as DemoScore
 def assign_demos(request):
     """Assign demos to judges.
 
-    Only staff can assign demos. There are a few rules to
-    follow when assigning demos, listed below.
-
-    Implemented
-    - All teams must be seen by at least _1_ judge
-
-    Not Implemented
-    - Every judge must see at least _1_ team
-    - No judge can see more than _20_ teams
-    - Judges should get demos in as _few_ categories as possible.
+    Only staff can assign demos.
     """
     if not (request.user.is_staff or request.user.is_superuser):
         return redirect('dashboard')
 
     if request.method == 'POST':
-        # ensure everyone is signed up for non-opt-in prizes
-        # for each team, assign the necessary amount of demos
         teams = Team.search()
         judges = User.search(is_judge=True)
 
-        team_q = deque(teams)
-        judge_q = deque(judges)
-        while len(team_q) > 0:
-            team = team_q.pop()
-            judge = judge_q.pop()
-            if not Demo.exists(judge.id, team.id):
-                Demo.create(judge.id, team.id)
-            judge_q.appendleft(judge)
+        # ensure everyone is signed up for non-opt-in prizes
+        non_opt_in_categories = Category.search(is_opt_in=False)
+        for team in teams:
+            for category in non_opt_in_categories:
+                Category.add_team(category.id, team.id)
+
+
+        # first, assign teams to sponsor prizes
+        # TODO: currently does not guarantee min_judges
+        organizers = Event.get().organizers
+        for category in Category.search():
+            if category.organization.id == organizers.id:  # skip organizer categories
+                continue
+            for team in category.submissions.all():
+                judges_for_category = User.search(is_judge=True, organization_id=category.organization.id)
+                for judge in judges_for_category:
+                    Demo.create(judge.id, team.id, if_not_exists=True)
+
+        # second, assign teams to non-sponsor prizes
+        # priority queue for teams (priority = number of demos already assigned)
+        # priority queue for judges (priority = number of demos already assigned)
+        demos_left = {}
+        team_q = PriorityQueue()
+        for team in teams:
+            demos = Demo.search(team_id=team.id)
+            priority = len(demos)
+
+            for category in Category.search():
+                if category.organization.id == organizers.id:
+                    if team.id not in demos_left:
+                        demos_left[team.id] = {}
+                    demos_left[team.id][category.id] = category.min_judges
+            team_q.put((priority, team.id))
+            
+        judge_q = PriorityQueue()
+        for judge in judges:
+            demos = Demo.search(judge_id=judge.id)
+            priority = len(demos)
+            judge_q.put((priority, judge.id))
+
+        while not team_q.empty():
+            team_priority, team_id = team_q.get()
+
+            if not any(demos_left[team_id].values()):  # if no more demos needed
+                continue
+            
+            for category_id, num_needed in demos_left[team_id].items():
+                if num_needed == 0:
+                    continue
+                team_priority += 1
+                demos_left[team_id][category_id] -= 1
+                judge_priority, judge_id = judge_q.get()
+                judge_priority += 1
+                judge_q.put((judge_priority, judge_id))
+                Demo.create(judge_id, team_id, if_not_exists=True)
+                break
+
+            team_q.put((team_priority, team_id))
 
         return redirect('dashboard')
     return redirect('dashboard')
@@ -94,7 +134,7 @@ def import_devpost(request):
                 # get or create category
                 categories = Category.search(name=prize)
                 if len(categories) == 0:
-                    organizers = Organization.search(name='organizers')[0]
+                    organizers = Event.get().organizers
                     category = Category.create(
                         name=prize, organization_id=organizers.id, is_opt_in=True)
                     messages.warning(request, '"{}" was created and assigned to "{}" by default'.format(

@@ -8,14 +8,20 @@ from . import criteria as Criteria
 from ..utils.api import *
 
 
-def create(judge_id: int, team_id: int):
+def create(judge_id: int, team_id: int, if_not_exists: bool = True):
     kwargs = locals()
     fields = {
         'judge_id': {'required': True, 'type': int},
         'team_id': {'required': True, 'type': int},
+        'if_not_exists': {'required': True, 'type': bool},
     }
     kwargs = clean_fields(fields, kwargs)
-    demo = Demo.objects.create(**kwargs)
+    demos = search(judge_id=judge_id, team_id=team_id)
+    if_not_exists = kwargs.pop('if_not_exists')
+    if len(demos) == 0 or not if_not_exists:
+        demo = Demo.objects.create(**kwargs)
+    else:
+        demo = demos[0]
     return demo
 
 

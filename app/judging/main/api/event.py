@@ -6,21 +6,23 @@ from ..models import Event
 from ..utils.api import *
 
 
-def create(name: str):
+def create(name: str, organizers_id: int = None):
     kwargs = locals()
     fields = {
         'name': {'required': True, 'type': str},
+        'organizers_id': {'required': False, 'type': int},
     }
     kwargs = clean_fields(fields, kwargs)
     event = Event.objects.create(**kwargs)
     return event
 
 
-def search(event_id: int = None, name: str = None):
+def search(event_id: int = None, name: str = None, organizers_id: int = None):
     kwargs = locals()
     fields = {
         'event_id': {'required': False, 'type': int},
         'name': {'required': False, 'type': str},
+        'organizers_id': {'required': False, 'type': int},
     }
     kwargs = clean_fields(fields, kwargs)
 
@@ -32,11 +34,17 @@ def search(event_id: int = None, name: str = None):
     return events.order_by('-event_id')
 
 
-def update(event_id: int, name: str = None):
+def get():
+    """Get event that was last created"""
+    return Event.objects.all().order_by('-id').first()
+
+
+def update(event_id: int, name: str = None, organizers_id: int = None):
     kwargs = locals()
     fields = {
         'event_id': {'required': True, 'type': int},
         'name': {'required': False, 'type': str},
+        'organizers_id': {'required': False, 'type': int},
     }
     kwargs = clean_fields(fields, kwargs)
 
