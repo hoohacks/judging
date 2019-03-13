@@ -14,6 +14,7 @@
             <a href="{% url 'logout' %}">Log out</a>
             <br>
             <h5 class="mt-4">Demo Queue</h5>
+            <p>* Red = submitted to {{ user.organization.name }}'s category</p>
             <div class="link-list">
                 {% for demo in demo_queue %}
                 <div class="row list-element">
