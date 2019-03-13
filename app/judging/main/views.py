@@ -253,12 +253,13 @@ def import_devpost(request):
                 team = teams[0]
 
             if prize != '':
-                # get category or break
+                # get or create category
                 categories = Category.search(name=prize)
                 if len(categories) == 0:
-                    context['error'] = 'Category "{}" does not exist'.format(prize)
-                    return render(request, 'admin/devpost.html', context)
-                category = categories[0]  # TODO: more robust edge case checking
+                    organizers = Organization.search(name='organizers')[0]
+                    category = Category.create(name=prize, organization_id=organizers.id, is_opt_in=True)
+                else:
+                    category = categories[0]  # TODO: more robust edge case checking
 
                 # add team to category
                 Category.add_team(category.id, team.id)
