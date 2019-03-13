@@ -10,6 +10,7 @@ urlpatterns = [
     path('profile', views.profile, name='profile'),
     path('evaluate', views.evaluate, name='evaluate'),
     path('assign_demos', views.assign_demos, name='assign_demos'),
+    path('assign_tables', views.assign_tables, name='assign_tables'),
     path('import_devpost', views.import_devpost, name='import_devpost'),
     path('edit_organizations', views.edit_organizations, name='edit_organizations'),
     path('add_organization', views.add_organization, name='add_organization'),

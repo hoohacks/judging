@@ -382,3 +382,22 @@ def delete_organization(request):
         response['success'] = True
         return JsonResponse(response)
     return JsonResponse(response)
+
+
+@login_required
+def assign_tables(request):
+    """Assign tables to teams.
+    
+    Only staff can assign teams.
+    """
+    if not (request.user.is_staff or request.user.is_superuser):
+        return redirect('dashboard')
+
+    if request.method == 'POST':
+        teams = Team.search().order_by('id')
+        table_cnt = 1
+        for team in teams:
+            Team.update(team.id, table=table_cnt)
+            table_cnt += 1
+        return redirect('dashboard')
+    return redirect('dashboard')

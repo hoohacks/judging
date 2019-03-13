@@ -29,6 +29,11 @@
                 {% csrf_token %}
                 <input type="submit" class="btn btn-primary" value="Assign Demos">
             </form>
+
+            <form method="POST" action="{% url 'assign_tables' %}">
+                {% csrf_token %}
+                <input type="submit" class="btn btn-primary" value="Assign Tables">
+            </form>
         </div>
     </div>
 </div>
