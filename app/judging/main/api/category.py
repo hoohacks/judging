@@ -10,6 +10,7 @@ def create(name: str,
                     organization_id: int,
                     description: str = None,
                     number_winners: int = None,
+                    min_judges: int = None,
                     is_opt_in: bool = None,
                     can_anyone_judge: bool = None):
     kwargs = locals()
@@ -18,6 +19,7 @@ def create(name: str,
         'organization_id': {'required': True, 'type': int},
         'description': {'required': False, 'type': str},
         'number_winners': {'required': False, 'type': int},
+        'min_judges': {'required': False, 'type': int},
         'is_opt_in': {'required': False, 'type': bool},
         'can_anyone_judge': {'required': False, 'type': bool},
     }
@@ -32,6 +34,7 @@ def search(
         description: str = None,
         organization_id: int = None,
         number_winners: int = None,
+        min_judges: int = None,
         is_opt_in: bool = None,
         can_anyone_judge: bool = None):
     kwargs = locals()
@@ -41,6 +44,7 @@ def search(
         'description': {'required': False, 'type': str},
         'organization_id': {'required': False, 'type': int},
         'number_winners': {'required': False, 'type': int},
+        'min_judges': {'required': False, 'type': int},
         'is_opt_in': {'required': False, 'type': bool},
         'can_anyone_judge': {'required': False, 'type': bool},
     }
@@ -60,6 +64,9 @@ def search(
     if 'number_winners' in kwargs:
         categories = categories.filter(
             number_winners__exact=kwargs['number_winners'])
+    if 'min_judges' in kwargs:
+        categories = categories.filter(
+            min_judges__exact=kwargs['min_judges'])
     if 'is_opt_in' in kwargs:
         categories = categories.filter(
             is_opt_in__exact=kwargs['is_opt_in'])
@@ -75,6 +82,7 @@ def update(
         description: str = None,
         organization_id: int = None,
         number_winners: int = None,
+        min_judges: int = None,
         is_opt_in: bool = None,
         can_anyone_judge: bool = None):
     kwargs = locals()
@@ -84,6 +92,7 @@ def update(
         'description': {'required': False, 'type': str},
         'organization_id': {'required': False, 'type': int},
         'number_winners': {'required': False, 'type': int},
+        'min_judges': {'required': False, 'type': int},
         'is_opt_in': {'required': False, 'type': bool},
         'can_anyone_judge': {'required': False, 'type': bool},
     }

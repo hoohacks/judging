@@ -37,6 +37,8 @@ def assign_demos(request):
         return redirect('dashboard')
 
     if request.method == 'POST':
+        # ensure everyone is signed up for non-opt-in prizes
+        # for each team, assign the necessary amount of demos
         teams = Team.search()
         judges = User.search(is_judge=True)
 
