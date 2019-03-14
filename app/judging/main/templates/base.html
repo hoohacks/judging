@@ -3,6 +3,8 @@
     <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#35367D">
+        <meta name="apple-mobile-web-app-status-bar-style" content="#35367D">
 
         <title>{% block title %}{% endblock %}</title>
 
@@ -10,6 +12,7 @@
         {% stylesheet 'main' %}
     </head>
     <body>
+        {% include 'navbar.html' with user=user %}
         {% block content %}
         {% endblock %}
         {% javascript 'jquery' %}
