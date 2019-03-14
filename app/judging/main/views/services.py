@@ -117,3 +117,39 @@ def delete_organization(request):
         response['success'] = True
         return JsonResponse(response)
     return JsonResponse(response)
+
+
+
+@login_required
+def get_scores(request):
+    response = {
+        'success': False,
+        'reason': ''
+    }
+
+    if request.method == 'POST':
+        team_id = request.POST.get('team', None)
+        if team_id == None:
+            response['reason'] = 'Must provide team ID'
+            return JsonResponse(response)
+
+        teams = Team.search(team_id=team_id)
+        if len(teams) == 0:
+            response['reason'] = 'Team with ID {} not found'.format(
+                team_id)
+            return JsonResponse(response)
+
+        demos = Demo.search(judge_id=request.user.id, team_id=team_id)
+        if len(demos) == 0:
+            response['reason'] = 'Demo not found'
+            return JsonResponse(response)
+        demo = demos[0]
+
+        demo_scores = DemoScore.search(demo_id=demo.id)
+        demo_scores_dict = {}
+        for score in demo_scores:
+            demo_scores_dict[score.criteria.id] = score.value
+        response['success'] = True
+        response['data'] = demo_scores_dict
+        return JsonResponse(response)
+    return JsonResponse(response)

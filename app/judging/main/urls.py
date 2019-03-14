@@ -17,6 +17,7 @@ urlpatterns = [
     path('add_organization', views.add_organization, name='add_organization'),
     path('delete_organization', views.delete_organization, name='delete_organization'),
     path('update_organization', views.update_organization, name='update_organization'),
+    path('get_scores', views.get_scores, name='get_scores'),
     path('login', auth_views.LoginView.as_view(template_name='registration/login.html'), name='login'),
     path('logout', auth_views.LogoutView.as_view(next_page='index'), name='logout'),
 ]
