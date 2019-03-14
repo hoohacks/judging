@@ -13,9 +13,11 @@
             <br>
             <a href="{% url 'logout' %}">Log out</a>
             <br>
-            <h5 class="mt-4">Demo Queue</h5>
-            <p>* Red = submitted to {{ user.organization.name }}'s category</p>
+            <h5 class="mt-4">My Assigned Demos</h5>
             <div class="link-list">
+                {% if demo_queue %}
+                <p>* Red = submitted to {{ user.organization.name }}'s category</p>
+                {% endif %}
                 {% for demo in demo_queue %}
                 <div class="row list-element">
                     <div class="col p-0">
@@ -25,8 +27,15 @@
                     </div>
                 </div>
                 {% endfor %}
+                {% if not demo_queue %}
+                <div class="row">
+                    <div class="col">
+                        <p>Demos assigned to you will show up here</p>
+                    </div>
+                </div>
+                {% endif %}
             </div>
-            <h5 class="mt-4">Past Demos</h5>
+            <h5 class="mt-4">My Past Demos</h5>
             <div class="link-list">
                 {% for demo in past_demos %}
                 <div class="row list-element list-element-past">
@@ -37,6 +46,13 @@
                     </div>
                 </div>
                 {% endfor %}
+                {% if not past_demos %}
+                <div class="row">
+                    <div class="col">
+                        <p>Teams you've already judged will show up here</p>
+                    </div>
+                </div>
+                {% endif %}
             </div>
         </div>
     </div>
