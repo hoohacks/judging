@@ -37,7 +37,7 @@ class Team(models.Model):
     is_anchor = models.BooleanField(default=False)
 
     def __str__(self):
-        return '[ID#{}] {}'.format(self.id, self.name)
+        return 'Table {} - {}'.format(self.table, self.name)
 
 
 class Category(models.Model):
