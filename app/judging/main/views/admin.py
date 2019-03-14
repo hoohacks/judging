@@ -17,6 +17,37 @@ from ..api import criteria as Criteria
 from ..api import criteria_label as CriteriaLabel
 from ..api import demo as Demo
 from ..api import demo_score as DemoScore
+from ..forms.event import EventProfileForm
+
+
+
+@login_required
+def edit_event(request):
+    """Assign demos to judges.
+
+    Only staff can assign demos.
+    """
+    if not (request.user.is_staff or request.user.is_superuser):
+        return redirect('dashboard')
+
+    if request.method == 'GET':
+        event = Event.get()
+        context = {
+            'form': EventProfileForm(instance=event),
+            'event': event,
+        }
+        return render(request, 'admin/edit_event.html', context)
+    elif request.method == 'POST':
+        form = EventProfileForm(request.POST)
+        if form.is_valid():
+            kwargs = {
+                'event_id': Event.get().id,
+                'name': form.cleaned_data.get('name'),
+                'organizers_id': form.cleaned_data.get('organizers').id,
+            }
+            Event.update(**kwargs)
+        return redirect('edit_event')
+    return redirect('edit_event')
 
 
 @login_required

@@ -1,5 +1,6 @@
 import re
 
+from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth import login, authenticate
 from django.contrib.auth.decorators import login_required
@@ -89,6 +90,7 @@ def dashboard(request):
                 'user': request.user,
                 'demos': Demo.search(),
                 'judges': User.search(is_judge=True),
+                'is_debug': settings.DEBUG,
             }
             return render(request, 'admin/dashboard.html', context)
         else:

@@ -1,0 +1,38 @@
+{% extends 'base.html' %}
+
+{% block title %}Configuration{% endblock %}
+
+{% block content %}
+<div id="configuration-container" class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <h1>Configuration</h1>
+            <ul class="messages">
+                {% for message in messages %}
+                <li {% if message.tags %}class="{{ message.tags }}"{% endif %}>
+                    {% if message.level == DEFAULT_MESSAGE_LEVELS.ERROR %}Important: {% endif %}
+                    {{ message }}
+                </li>
+                {% endfor %}
+            </ul>
+            <form method="POST">
+                {% csrf_token %}
+                {{ form.non_field_errors }}
+                <div class="form-group">
+                    {{ form.name.errors }}
+                    {{ form.name.label_tag }}
+                    <input class="form-control" id="{{ form.name.id_for_label }}" maxlength="150" name="{{ form.name.html_name }}" value="{{ form.name.value }}" type="text" /> 
+                    <small class="form-text text-muted">{{ form.name.help_text }}</small>
+                </div>
+                <div class="form-group">
+                    {{ form.organizers.errors }}
+                    {{ form.organizers.label_tag }}
+                    {{ form.organizers }}
+                    <small class="form-text text-muted">{{ form.organizers.help_text }}</small>
+                </div>
+                <input type="submit" class="btn btn-secondary btn-block">
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

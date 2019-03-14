@@ -22,10 +22,12 @@
                 <input type="submit" class="btn btn-primary" value="Assign Tables">
             </form>
 
+            {% if is_debug %}
             <form method="POST" action="{% url 'simulate_demos' %}">
                 {% csrf_token %}
                 <input type="submit" class="btn btn-primary" value="Simulate Demos">
             </form>
+            {% endif %}
         </div>
     </div>
 </div>
