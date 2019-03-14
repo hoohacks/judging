@@ -1,3 +1,5 @@
+import random
+
 from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
 
@@ -153,3 +155,35 @@ def get_scores(request):
         response['data'] = demo_scores_dict
         return JsonResponse(response)
     return JsonResponse(response)
+
+
+@login_required
+def simulate_demos(request):
+    """DEVELOPMENT ONLY"""
+    if not (request.user.is_staff or request.user.is_superuser):
+        return JsonResponse({'success': False})
+
+    if request.method == 'POST':
+        judge_distributions = {}
+        team_distributions = {}
+        for demo in Demo.search():
+            if Demo.completed(demo.id):
+                continue
+            if demo.judge.id not in judge_distributions:
+                judge_distributions[demo.judge.id] = {
+                    'mean': random.gauss(0, 0.25),
+                    'std': random.gauss(0.1, 0.1)
+                }
+            if demo.team.id not in team_distributions:
+                team_distributions[demo.team.id] = {
+                    'mean': random.gauss(3, 0.5),
+                    'std': random.gauss(0.5, 0.1)
+                }
+            for criteria in Criteria.search():
+                team_score = random.gauss(team_distributions[demo.team.id]['mean'], team_distributions[demo.team.id]['std'])
+                judge_adjust = random.gauss(judge_distributions[demo.judge.id]['mean'], judge_distributions[demo.judge.id]['std'])
+                demo_score = round(team_score + judge_adjust)
+                demo_score = min(max(demo_score, 1), 5)
+                DemoScore.create(demo.id, criteria.id, demo_score)
+        return JsonResponse({'success': True})
+    return JsonResponse({'success': False})

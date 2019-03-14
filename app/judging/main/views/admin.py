@@ -21,6 +21,8 @@ from ..api import demo_score as DemoScore
 
 @login_required
 def assign_demos(request):
+    # TODO: move this to a service
+    # TODO: have an option to assign demos without actually creating the demos i.e. trial run
     """Assign demos to judges.
 
     Only staff can assign demos.
@@ -227,3 +229,41 @@ def statistics(request):
         context['statistics'] = statistics
         return render(request, 'admin/statistics.html', context)
     return redirect('statistics')
+
+
+
+@login_required
+def scores(request):
+    # TODO: move computation into POST request
+    """Page for viewing and normalizing scores."""
+    if not (request.user.is_staff or request.user.is_superuser):
+        return redirect('dashboard')
+
+    if request.method == 'GET':
+        context = {}
+
+        teams = Team.search()
+        team_scores = []
+        for team in teams:
+            team_demos = Demo.search(team_id=team.id)
+            demo_totals = []
+            for demo in team_demos:
+                scores = DemoScore.search(demo_id=demo.id)
+                demo_total = 0
+                for score in scores:
+                    demo_total += score.criteria.weight * score.value
+                demo_totals.append(demo_total)
+            team_scores.append((sum(demo_totals) / len(demo_totals), team))
+        
+        rankings = sorted(team_scores, key=lambda i: i[0], reverse=True)
+
+        score, winner = rankings[0]
+        winning_scores = []
+        for demo in Demo.search(team_id=winner.id):
+            scores = DemoScore.search(demo_id=demo.id)
+            winning_scores.append([score.value for score in scores])
+
+        context['rankings'] = rankings
+        context['winning_scores'] = winning_scores
+        return render(request, 'admin/scores.html', context)
+    return redirect('scores')

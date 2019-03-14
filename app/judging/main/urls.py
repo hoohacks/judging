@@ -10,6 +10,7 @@ urlpatterns = [
     path('profile', views.profile, name='profile'),
     path('evaluate', views.evaluate, name='evaluate'),
     path('statistics', views.statistics, name='statistics'),
+    path('scores', views.scores, name='scores'),
     path('assign_demos', views.assign_demos, name='assign_demos'),
     path('assign_tables', views.assign_tables, name='assign_tables'),
     path('import_devpost', views.import_devpost, name='import_devpost'),
@@ -20,4 +21,6 @@ urlpatterns = [
     path('get_scores', views.get_scores, name='get_scores'),
     path('login', auth_views.LoginView.as_view(template_name='registration/login.html'), name='login'),
     path('logout', auth_views.LogoutView.as_view(next_page='index'), name='logout'),
+    # DEVELOPMENT ONLY
+    path('simulate_demos', views.simulate_demos, name='simulate_demos'),
 ]
