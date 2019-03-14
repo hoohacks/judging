@@ -4,13 +4,25 @@
 
 {% block content %}
 <div class="container">
-    <div class="row">
+    <div class="row justify-content-center">
         <div class="col-sm-6">
             <h1>Log in</h1>
-            <form method="post">
+            <form method="POST">
                 {% csrf_token %}
-                {{ form.as_p }}
-                <input type="submit" class="btn btn-primary">
+                {{ form.non_field_errors }}
+                <div class="form-group">
+                    {{ form.username.errors }}
+                    {{ form.username.label_tag }}
+                    <input class="form-control" id="{{ form.username.id_for_label }}" maxlength="150" name="{{ form.username.html_name }}" type="text" /> 
+                    <small class="form-text text-muted">{{ form.username.help_text }}</small>
+                </div>
+                <div class="form-group">
+                    {{ form.password.errors }}
+                    {{ form.password.label_tag }}
+                    <input class="form-control" id="{{ form.password.id_for_label }}" maxlength="150" name="{{ form.password.html_name }}" type="password" /> 
+                    <small class="form-text text-muted">{{ form.password.help_text }}</small>
+                </div>
+                <input type="submit" class="btn btn-secondary btn-block">
             </form>
         </div>
     </div>

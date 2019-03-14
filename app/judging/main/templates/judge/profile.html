@@ -3,15 +3,38 @@
 {% block title %}Profile{% endblock %}
 
 {% block content %}
-<div class="container">
-    <div class="row">
-        <div class="col-sm-6">
+<div id="edit-profile-container" class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
             <h1>Profile</h1>
             <form method="POST">
                 {% csrf_token %}
                 {{ form.non_field_errors }}
-                {{ form }}
-                <input type="submit" class="btn btn-primary">
+                <div class="form-group">
+                    {{ form.username.errors }}
+                    {{ form.username.label_tag }}
+                    {{ form.username }}
+                    <small class="form-text text-muted">{{ form.username.help_text }}</small>
+                </div>
+                <div class="form-group">
+                    {{ form.first_name.errors }}
+                    {{ form.first_name.label_tag }}
+                    {{ form.first_name }}
+                    <small class="form-text text-muted">{{ form.first_name.help_text }}</small>
+                </div>
+                <div class="form-group">
+                    {{ form.last_name.errors }}
+                    {{ form.last_name.label_tag }}
+                    {{ form.last_name }}
+                    <small class="form-text text-muted">{{ form.last_name.help_text }}</small>
+                </div>
+                <div class="form-group">
+                    {{ form.organization.errors }}
+                    {{ form.organization.label_tag }}
+                    {{ form.organization }}
+                    <small class="form-text text-muted">{{ form.organization.help_text }}</small>
+                </div>
+                <input type="submit" class="btn btn-secondary">
             </form>
         </div>
     </div>

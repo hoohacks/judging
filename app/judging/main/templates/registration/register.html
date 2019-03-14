@@ -4,15 +4,45 @@
 
 {% block content %}
 <div class="container">
-    <div class="row">
+    <div class="row justify-content-center">
         <div class="col-sm-6">
             <h1>Register</h1>
             <form method="POST">
                 {% csrf_token %}
-                {{ form }}
-                <input type="submit" class="btn btn-primary">
+                {{ form.non_field_errors }}
+                <div class="form-group">
+                    {{ form.username.errors }}
+                    {{ form.username.label_tag }}
+                    <input class="form-control" id="{{ form.username.id_for_label }}" maxlength="150" name="{{ form.username.html_name }}" type="text" /> 
+                    <small class="form-text text-muted">{{ form.username.help_text }}</small>
+                </div>
+                <div class="form-group">
+                    {{ form.first_name.errors }}
+                    {{ form.first_name.label_tag }}
+                    <input class="form-control" id="{{ form.first_name.id_for_label }}" maxlength="150" name="{{ form.first_name.html_name }}" type="first_name" /> 
+                    <small class="form-text text-muted">{{ form.first_name.help_text }}</small>
+                </div>
+                <div class="form-group">
+                    {{ form.last_name.errors }}
+                    {{ form.last_name.label_tag }}
+                    <input class="form-control" id="{{ form.last_name.id_for_label }}" maxlength="150" name="{{ form.last_name.html_name }}" type="last_name" /> 
+                    <small class="form-text text-muted">{{ form.last_name.help_text }}</small>
+                </div>
+                <div class="form-group">
+                    {{ form.password1.errors }}
+                    {{ form.password1.label_tag }}
+                    <input class="form-control" id="{{ form.password1.id_for_label }}" maxlength="150" name="{{ form.password1.html_name }}" type="password1" /> 
+                    <small class="form-text text-muted">{{ form.password1.help_text }}</small>
+                </div>
+                <div class="form-group">
+                    {{ form.password2.errors }}
+                    {{ form.password2.label_tag }}
+                    <input class="form-control" id="{{ form.password2.id_for_label }}" maxlength="150" name="{{ form.password2.html_name }}" type="password2" /> 
+                    <small class="form-text text-muted">{{ form.password2.help_text }}</small>
+                </div>
+                <input type="submit" class="btn btn-secondary btn-block">
             </form>
         </div>
     </div>
 </div>
-{% endblock %}   
+{% endblock %}
