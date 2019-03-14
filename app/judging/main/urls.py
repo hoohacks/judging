@@ -7,11 +7,12 @@ from . import views
 urlpatterns = [
     path('', views.index, name='index'),
     path('register', views.register, name='register'),
-    path('dashboard', views.dashboard, name='dashboard'),
+    path('queue', views.queue, name='queue'),
     path('profile', views.profile, name='profile'),
     path('evaluate', views.evaluate, name='evaluate'),
     path('statistics', views.statistics, name='statistics'),
     path('scores', views.scores, name='scores'),
+    path('dashboard', views.dashboard, name='dashboard'),
     path('edit_event', views.edit_event, name='edit_event'),
     path('assign_demos', views.assign_demos, name='assign_demos'),
     path('assign_tables', views.assign_tables, name='assign_tables'),

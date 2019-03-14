@@ -1,6 +1,5 @@
 import re
 
-from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth import login, authenticate
 from django.contrib.auth.decorators import login_required
@@ -28,7 +27,7 @@ def index(request):
     to the dashboard. Links to log in and register page.
     """
     if request.user.is_authenticated:
-        return redirect('dashboard')
+        return redirect('queue')
     return render(request, 'main/index.html')
 
 
@@ -40,7 +39,7 @@ def register(request):
     page with a next to dashboard.
     """
     if request.user.is_authenticated:
-        return redirect('dashboard')
+        return redirect('queue')
 
     if request.method == 'GET':
         context = {'form': RegistrationForm()}
@@ -54,7 +53,7 @@ def register(request):
         password = form.cleaned_data.get('password1')
         user = authenticate(username=username, password=password)
         login(request, user)
-        return redirect('dashboard')
+        return redirect('queue')
     return redirect('register')
 
 
@@ -74,8 +73,8 @@ def profile(request):
 
 
 @login_required
-def dashboard(request):
-    """Dashboard for judges.
+def queue(request):
+    """Demo queue for judges.
 
     If not logged in, redirects to index. If logged in, but the
     profile is incomplete, redirect to profile. If logged in and
@@ -83,34 +82,25 @@ def dashboard(request):
     """
     if not request.user.is_profile_complete():
         return redirect('profile')
-
+        
     if request.method == 'GET':
-        if request.user.is_staff or request.user.is_superuser:
-            context = {
-                'user': request.user,
-                'demos': Demo.search(),
-                'judges': User.search(is_judge=True),
-                'is_debug': settings.DEBUG,
-            }
-            return render(request, 'admin/dashboard.html', context)
-        else:
-            demos = Demo.search(judge_id=request.user.id).order_by('team__table')
-            demos = sorted(demos, key=lambda d: d.is_for_judge_category, reverse=True)
-            demo_queue = []
-            past_demos = []
-            for demo in demos:
-                if Demo.completed(demo.id):
-                    past_demos.append(demo)
-                else:
-                    demo_queue.append(demo)
+        demos = Demo.search(judge_id=request.user.id).order_by('team__table')
+        demos = sorted(demos, key=lambda d: d.is_for_judge_category, reverse=True)
+        demo_queue = []
+        past_demos = []
+        for demo in demos:
+            if Demo.completed(demo.id):
+                past_demos.append(demo)
+            else:
+                demo_queue.append(demo)
 
-            context = {
-                'user': request.user,
-                'demo_queue': demo_queue,
-                'past_demos': past_demos,
-            }
-            return render(request, 'judge/dashboard.html', context)
-    return redirect('dashboard')
+        context = {
+            'user': request.user,
+            'demo_queue': demo_queue,
+            'past_demos': past_demos,
+        }
+        return render(request, 'judge/dashboard.html', context)
+    return redirect('queue')
 
 
 @login_required
@@ -183,4 +173,4 @@ def evaluate(request):
                 DemoScore.update(demo_score.id, value=score)
 
         # TODO: submit demo if judging is open
-        return redirect('dashboard')
+        return redirect('queue')
