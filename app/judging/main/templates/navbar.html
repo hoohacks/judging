@@ -19,6 +19,10 @@
                 <li class="nav-item {% if edit_event_url == request.path %}active{% endif %}">
                     <a class="nav-link" href="{{ edit_event_url }}">Event {% if edit_event_url == request.path %}<span class="sr-only">(current)</span>{% endif %}</a>
                 </li>
+                {% url 'prejudging' as prejudging_url %}
+                <li class="nav-item {% if prejudging_url == request.path %}active{% endif %}">
+                    <a class="nav-link" href="{{ prejudging_url }}">Pre-Judging {% if prejudging_url == request.path %}<span class="sr-only">(current)</span>{% endif %}</a>
+                </li>
                 {% url 'statistics' as statistics_url %}
                 <li class="nav-item {% if statistics_url == request.path %}active{% endif %}">
                     <a class="nav-link" href="{{ statistics_url }}">Statistics {% if statistics_url == request.path %}<span class="sr-only">(current)</span>{% endif %}</a>

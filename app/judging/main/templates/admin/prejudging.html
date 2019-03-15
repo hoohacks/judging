@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+
+{% block title %}Scores{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-sm-8">
+            <h1>Pre-judging</h1>
+            <section>
+                <h2>1. Define sponsors</h2>
+                {% include 'admin/edit_organizations.html' %}
+            </section>
+            <section>
+                <h2>2. Define prize categories</h2>
+            </section>
+            <section>
+                <h2>3. Run normalization session</h2>
+            </section>
+        </div>
+    </div>
+</div>
+{% endblock %}

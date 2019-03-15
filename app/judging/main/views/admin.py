@@ -22,12 +22,7 @@ from ..forms.event import EventProfileForm, DemoConfigurationForm
 
 @login_required
 def dashboard(request):
-    """Dashboard for admin.
-
-    If not logged in, redirects to index. If logged in, but the
-    profile is incomplete, redirect to profile. If logged in and
-    the profile is complete, render page.
-    """    
+    """Dashboard for admin."""
     if not (request.user.is_staff or request.user.is_superuser):
         return redirect('index')
 
@@ -40,8 +35,29 @@ def dashboard(request):
             'config_form': DemoConfigurationForm(instance=Event.get()),
         }
         return render(request, 'admin/dashboard.html', context)
-        
+
     return redirect('dashboard')
+
+
+@login_required
+def prejudging(request):
+    """Page for configuration and setup before judging begins."""
+    if not (request.user.is_staff or request.user.is_superuser):
+        return redirect('index')
+
+    if request.method == 'GET':
+        context = {
+            'user': request.user,
+            'demos': Demo.search(),
+            'organizations': Organization.search().order_by('name'),
+            'organizers_id': Event.get().id,
+            'judges': User.search(is_judge=True),
+            'is_debug': settings.DEBUG,
+            'config_form': DemoConfigurationForm(instance=Event.get()),
+        }
+        return render(request, 'admin/prejudging.html', context)
+
+    return redirect('prejudging')
 
 
 @login_required
@@ -128,19 +144,6 @@ def import_devpost(request):
 
 
 @login_required
-def edit_organizations(request):
-    if not (request.user.is_staff or request.user.is_superuser):
-        return redirect('index')
-
-    if request.method == 'GET':
-        context = {
-            'organizations': Organization.search().order_by('name')
-        }
-        return render(request, 'admin/edit_organizations.html', context)
-    return redirect('edit_organizations')
-
-
-@login_required
 def assign_tables(request):
     """Assign tables to teams.
 
@@ -160,7 +163,6 @@ def assign_tables(request):
             table_cnt += 1
         return redirect('dashboard')
     return redirect('dashboard')
-
 
 
 @login_required
@@ -200,12 +202,9 @@ def statistics(request):
             'value': num_demos / num_judges
         })
 
-
-
         context['statistics'] = statistics
         return render(request, 'admin/statistics.html', context)
     return redirect('statistics')
-
 
 
 @login_required
@@ -230,7 +229,7 @@ def scores(request):
                     demo_total += score.criteria.weight * score.value
                 demo_totals.append(demo_total)
             team_scores.append((sum(demo_totals) / len(demo_totals), team))
-        
+
         rankings = sorted(team_scores, key=lambda i: i[0], reverse=True)
 
         score, winner = rankings[0]
