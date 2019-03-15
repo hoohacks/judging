@@ -4,8 +4,10 @@ import random
 import re
 
 from bs4 import BeautifulSoup
+from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
+from django.shortcuts import render, redirect
 import requests
 
 
@@ -23,71 +25,68 @@ from ..utils.api import extract_fields, ApiException
 
 @login_required
 def import_categories_from_devpost(request):
-    response = {
-        'success': False,
-        'reason': ''
-    }
     if not (request.user.is_staff or request.user.is_superuser):
-        response['reason'] = 'Must be admin'
-        return JsonResponse(response)
+        messages.error(request, 'Must be admin', extra_tags='import_categories_from_devpost')
+        return redirect('import_categories_from_devpost')
 
-    if request.method != 'POST':
-        response['reason'] = 'Must be a POST request'
-        return JsonResponse(response)
+    if request.method == 'GET':
+        context = {
+            'categories': Category.search().order_by('name')
+        }
+        return render(request, 'admin/edit_categories.html', context)
+    elif request.method == 'POST':
+        # Extract devpost url from request data
+        fields = {'devpost_url': {'required': True, 'type': str}}
+        try:
+            kwargs = extract_fields(fields, request.POST)
+        except ApiException as e:
+            messages.error(request, str(e), extra_tags='import_categories_from_devpost')
+            return redirect('import_categories_from_devpost')
 
-    # Extract devpost url from request data
-    fields = {'devpost_url': {'required': True, 'type': str}}
-    try:
-        kwargs = extract_fields(fields, request.POST)
-    except ApiException as e:
-        response['reason'] = str(e)
-        return JsonResponse(response)
+        # Get devpost data
+        devpost_url = kwargs.pop('devpost_url')
+        r = requests.get(devpost_url)
+        if r.status_code != 200:
+            messages.error(request, 'Bad URL, Response <{}>'.format(r.status_code), extra_tags='import_categories_from_devpost')
+            return redirect('import_categories_from_devpost')
+        soup = BeautifulSoup(r.text, 'html.parser')
 
-    # Get devpost data
-    devpost_url = kwargs.pop('devpost_url')
-    r = requests.get(devpost_url)
-    if r.status_code != 200:
-        response['reason'] = 'Bad URL, Response <{}>'.format(r.status_code)
-        return JsonResponse(response)
-    soup = BeautifulSoup(r.text, 'html.parser')
+        # Scrape prize information
+        prize_list_items = soup.find_all('li', attrs={'class': 'prize'})
+        raw_prize_texts = []
+        for prize_li in prize_list_items:
+            raw_prize_texts.append(prize_li.find('h6').text.strip())
 
-    # Scrape prize information
-    prize_list_items = soup.find_all('li', attrs={'class': 'prize'})
-    raw_prize_texts = []
-    for prize_li in prize_list_items:
-        raw_prize_texts.append(prize_li.find('h6').text.strip())
+        # Extract name and number of winners
+        # Example: "Best Overall Hack   (2)"
+        pattern = re.compile('\(\d+\)$')
+        prizes = []
+        for raw_text in raw_prize_texts:
+            pattern_match = pattern.search(raw_text)
+            if pattern_match:
+                start_index = pattern_match.span()[0]
+                prizes.append({
+                    'name': raw_text[:start_index].strip(),
+                    'num_winners': int(pattern_match.group()[1:-1])
+                })
+            else:
+                prizes.append({
+                    'name': raw_text,
+                    'num_winners': 1
+                })
 
-    # Extract name and number of winners
-    # Example: "Best Overall Hack   (2)"
-    pattern = re.compile('\(\d+\)$')
-    prizes = []
-    for raw_text in raw_prize_texts:
-        pattern_match = pattern.search(raw_text)
-        if pattern_match:
-            start_index = pattern_match.span()[0]
-            prizes.append({
-                'name': raw_text[:start_index].strip(),
-                'num_winners': int(pattern_match.group()[1:-1])
-            })
-        else:
-            prizes.append({
-                'name': raw_text,
-                'num_winners': 1
-            })
+        # Actually create prizes if they don't exist
+        created_categories = []
+        for prize in prizes:
+            if len(Category.search(name=prize['name'])) > 0:
+                continue
 
-    # Actually create prizes if they don't exist
-    created_categories = []
-    for prize in prizes:
-        if len(Category.search(name=prize['name'])) > 0:
-            continue
-
-        organizers_id = Event.get().organizers.id
-        Category.create(name=prize['name'],
-                        organization_id=organizers_id,
-                        number_winners=prize['num_winners'])
-
-    response['success'] = True
-    return JsonResponse(response)
+            organizers_id = Event.get().organizers.id
+            Category.create(name=prize['name'],
+                            organization_id=organizers_id,
+                            number_winners=prize['num_winners'])
+        return redirect('import_categories_from_devpost')
+    return redirect('import_categories_from_devpost')
 
 
 @login_required

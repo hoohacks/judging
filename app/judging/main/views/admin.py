@@ -54,6 +54,7 @@ def prejudging(request):
             'judges': User.search(is_judge=True),
             'is_debug': settings.DEBUG,
             'config_form': DemoConfigurationForm(instance=Event.get()),
+            'categories': Category.search().order_by('name'),
         }
         return render(request, 'admin/prejudging.html', context)
 

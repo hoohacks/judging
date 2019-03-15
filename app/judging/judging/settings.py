@@ -170,6 +170,7 @@ PIPELINE = {
             'source_filenames': {
                 'js/evaluate.js',
                 'js/edit_organizations.js',
+                'js/prejudging.js'
             },
             'output_filename': 'js/main.js'
         },
