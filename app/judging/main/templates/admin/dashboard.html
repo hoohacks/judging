@@ -9,7 +9,7 @@
             <h1>Hi {{ user.first_name }}</h1>
             <a href="{% url 'import_devpost' %}">Import devpost</a>
             <br>
-            <a href="{% url 'edit_organizations' %}">Edit Organizations</a>
+            <a href="{% url 'prejudging' %}">Judging setup</a>
             <br>
 
             {{ form.non_field_errors }}
@@ -36,6 +36,10 @@
                 <form method="POST" action="{% url 'simulate_demos' %}">
                     {% csrf_token %}
                     <input type="submit" class="btn btn-primary" value="Simulate Demos">
+                </form>
+                <form method="POST" action="{% url 'generate_judges' %}">
+                    {% csrf_token %}
+                    <input type="submit" class="btn btn-primary" value="Generate judges">
                 </form>
             {% endif %}
         </div>

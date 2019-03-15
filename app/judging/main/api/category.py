@@ -3,8 +3,8 @@ from django.shortcuts import render
 
 
 from ..models import Category
-from ..api.team import Team
-from ..api.user import User
+from ..api import team as Team
+from ..api import user as User
 from ..utils.api import *
 
 

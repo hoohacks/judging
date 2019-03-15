@@ -1,0 +1,40 @@
+<div>
+    <form method="POST" action="{% url 'import_categories_from_devpost' %}">
+        {% csrf_token %}
+        <label for="devpost_url">Devpost URL</label>
+        <input type="text" class="form-control" name="devpost_url">
+        <input type="submit" class="btn btn-secondary">
+    </form>
+</div>
+<hr>
+<div id="category-list">
+    {% for category in categories %}
+    <div>
+        <form class="p-1 submit-on-unfocus" method="POST" action="#" data-delete-action="#">
+            {% csrf_token %}
+            <input type="hidden" value="{{ category.id }}" name="category_id" id="category_id">
+            <div class="input-group row">
+                <label for="category_name" class="col-sm-1 my-auto">
+                    <div class="text-center">{{ forloop.counter }}</div>
+                </label>
+                <input type="text" value="{{ category.name }}" name="category_name" class="form-control {% if category.id == categoryanizers_id %}border-info{% endif %} col" required>
+                <div class="input-group-append">
+                    <input type="button" class="btn btn-outline-danger category-delete-button" value="Delete">
+                </div>
+            </div>
+        </form>
+    </div>
+    {% endfor %}
+</div>
+<hr>
+<div>
+    <form class="p-1 submit-on-enter" method="POST" action="#">
+        {% csrf_token %}
+        <div class="input-group row">
+            <input type="text" name="org_name" class="form-control col offset-1" placeholder="New category..." required>
+            <div class="input-group-append">
+                <input type="submit" class="btn btn-outline-primary" value="Add">
+            </div>
+        </div>
+    </form>
+</div>

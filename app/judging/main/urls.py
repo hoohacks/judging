@@ -23,6 +23,7 @@ urlpatterns = [
     path('add_organization', views.add_organization, name='add_organization'),
     path('delete_organization', views.delete_organization, name='delete_organization'),
     path('update_organization', views.update_organization, name='update_organization'),
+    path('import_categories_from_devpost', views.import_categories_from_devpost, name='import_categories_from_devpost'),
     path('get_scores', views.get_scores, name='get_scores'),
     path('login', auth_views.LoginView.as_view(template_name='registration/login.html'), name='login'),
     path('logout', auth_views.LogoutView.as_view(next_page='index'), name='logout'),
@@ -31,5 +32,6 @@ urlpatterns = [
 # DEVELOPMENT ONLY
 if settings.DEBUG:
     urlpatterns += [
-        path('simulate_demos', views.simulate_demos, name='simulate_demos')
+        path('generate_judges', views.generate_judges, name='generate_judges'),
+        path('simulate_demos', views.simulate_demos, name='simulate_demos'),
     ]

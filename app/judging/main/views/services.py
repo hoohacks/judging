@@ -1,8 +1,12 @@
+from itertools import product
 from queue import PriorityQueue
 import random
+import re
 
+from bs4 import BeautifulSoup
 from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
+import requests
 
 
 from ..api import user as User
@@ -14,6 +18,76 @@ from ..api import criteria as Criteria
 from ..api import criteria_label as CriteriaLabel
 from ..api import demo as Demo
 from ..api import demo_score as DemoScore
+from ..utils.api import extract_fields, ApiException
+
+
+@login_required
+def import_categories_from_devpost(request):
+    response = {
+        'success': False,
+        'reason': ''
+    }
+    if not (request.user.is_staff or request.user.is_superuser):
+        response['reason'] = 'Must be admin'
+        return JsonResponse(response)
+
+    if request.method != 'POST':
+        response['reason'] = 'Must be a POST request'
+        return JsonResponse(response)
+
+    # Extract devpost url from request data
+    fields = {'devpost_url': {'required': True, 'type': str}}
+    try:
+        kwargs = extract_fields(fields, request.POST)
+    except ApiException as e:
+        response['reason'] = str(e)
+        return JsonResponse(response)
+
+    # Get devpost data
+    devpost_url = kwargs.pop('devpost_url')
+    r = requests.get(devpost_url)
+    if r.status_code != 200:
+        response['reason'] = 'Bad URL, Response <{}>'.format(r.status_code)
+        return JsonResponse(response)
+    soup = BeautifulSoup(r.text, 'html.parser')
+
+    # Scrape prize information
+    prize_list_items = soup.find_all('li', attrs={'class': 'prize'})
+    raw_prize_texts = []
+    for prize_li in prize_list_items:
+        raw_prize_texts.append(prize_li.find('h6').text.strip())
+
+    # Extract name and number of winners
+    # Example: "Best Overall Hack   (2)"
+    pattern = re.compile('\(\d+\)$')
+    prizes = []
+    for raw_text in raw_prize_texts:
+        pattern_match = pattern.search(raw_text)
+        if pattern_match:
+            start_index = pattern_match.span()[0]
+            prizes.append({
+                'name': raw_text[:start_index].strip(),
+                'num_winners': int(pattern_match.group()[1:-1])
+            })
+        else:
+            prizes.append({
+                'name': raw_text,
+                'num_winners': 1
+            })
+
+    # Actually create prizes if they don't exist
+    created_categories = []
+    for prize in prizes:
+        if len(Category.search(name=prize['name'])) > 0:
+            continue
+
+        organizers_id = Event.get().organizers.id
+        Category.create(name=prize['name'],
+                        organization_id=organizers_id,
+                        number_winners=prize['num_winners'])
+
+    response['success'] = True
+    return JsonResponse(response)
 
 
 @login_required
@@ -158,40 +232,6 @@ def get_scores(request):
 
 
 @login_required
-def simulate_demos(request):
-    """DEVELOPMENT ONLY"""
-    if not (request.user.is_staff or request.user.is_superuser):
-        return JsonResponse({'success': False})
-
-    if request.method == 'POST':
-        judge_distributions = {}
-        team_distributions = {}
-        for demo in Demo.search():
-            if Demo.completed(demo.id):
-                continue
-            if demo.judge.id not in judge_distributions:
-                judge_distributions[demo.judge.id] = {
-                    'mean': random.gauss(0, 0.25),
-                    'std': random.gauss(0.1, 0.1)
-                }
-            if demo.team.id not in team_distributions:
-                team_distributions[demo.team.id] = {
-                    'mean': random.gauss(3, 0.5),
-                    'std': random.gauss(0.5, 0.1)
-                }
-            for criteria in Criteria.search():
-                team_score = random.gauss(
-                    team_distributions[demo.team.id]['mean'], team_distributions[demo.team.id]['std'])
-                judge_adjust = random.gauss(
-                    judge_distributions[demo.judge.id]['mean'], judge_distributions[demo.judge.id]['std'])
-                demo_score = round(team_score + judge_adjust)
-                demo_score = min(max(demo_score, 1), 5)
-                DemoScore.create(demo.id, criteria.id, demo_score)
-        return JsonResponse({'success': True})
-    return JsonResponse({'success': False})
-
-
-@login_required
 def assign_demos(request):
     """Assign demos to judges.
 
@@ -202,7 +242,6 @@ def assign_demos(request):
 
     if request.method != 'POST':
         return JsonResponse({'success': False, 'reason': 'Must be POST'})
-
 
     teams = Team.search()
     judges = User.search(is_judge=True)
@@ -267,3 +306,75 @@ def assign_demos(request):
         team_q.put((team_priority, team_id))
 
     return JsonResponse({'success': True})
+
+
+@login_required
+def simulate_demos(request):
+    """DEVELOPMENT ONLY"""
+    if not (request.user.is_staff or request.user.is_superuser):
+        return JsonResponse({'success': False})
+
+    if request.method == 'POST':
+        judge_distributions = {}
+        team_distributions = {}
+        for demo in Demo.search():
+            if Demo.completed(demo.id):
+                continue
+            if demo.judge.id not in judge_distributions:
+                judge_distributions[demo.judge.id] = {
+                    'mean': random.gauss(0, 0.25),
+                    'std': random.gauss(0.1, 0.1)
+                }
+            if demo.team.id not in team_distributions:
+                team_distributions[demo.team.id] = {
+                    'mean': random.gauss(3, 0.5),
+                    'std': random.gauss(0.5, 0.1)
+                }
+            for criteria in Criteria.search():
+                team_score = random.gauss(
+                    team_distributions[demo.team.id]['mean'], team_distributions[demo.team.id]['std'])
+                judge_adjust = random.gauss(
+                    judge_distributions[demo.judge.id]['mean'], judge_distributions[demo.judge.id]['std'])
+                demo_score = round(team_score + judge_adjust)
+                demo_score = min(max(demo_score, 1), 5)
+                DemoScore.create(demo.id, criteria.id, demo_score)
+        return JsonResponse({'success': True})
+    return JsonResponse({'success': False})
+
+
+@login_required
+def generate_judges(request):
+    """DEVELOPMENT ONLY"""
+    if not (request.user.is_staff or request.user.is_superuser):
+        return JsonResponse({'success': False})
+
+    if request.method == 'POST':
+        first_names = ['Alice', 'Bob', 'Charlie', 'Dave', 'Eliza',
+                       'Frank', 'George', 'Helena', 'Isabelle', 'John']
+        last_names = ['Schuyler', 'Washington', 'Hamilton',
+                      'Adams', 'Madison', 'Franklin', 'Jefferson', 'Mulligan']
+
+        # Generate notional number of judges per organization
+        orgs = Organization.search()
+        organizers_id = Event.get().organizers.id
+        avg_num_judges_per_org = 2
+        judge_needs = []  # list of org ids, one for each judge needed
+        for org in orgs:
+            if org.id == organizers_id:
+                continue
+            for i in range(int(random.expovariate(1 / (avg_num_judges_per_org - 1))) + 1):
+                judge_needs.append(org.id)
+
+        # Create judges
+        j_cnt = 0
+        for fn, ln in product(first_names, last_names):
+            org_id = judge_needs[j_cnt]
+            username = fn[0].lower() + ln.lower()
+            User.create(first_name=fn, last_name=ln, username=username,
+                        password='thisismypassword', organization_id=org_id)
+            j_cnt += 1
+            if j_cnt >= len(judge_needs):
+                break
+        
+        return JsonResponse({'success': True})
+    return JsonResponse({'success': False})
