@@ -99,7 +99,7 @@ def queue(request):
             'demo_queue': demo_queue,
             'past_demos': past_demos,
         }
-        return render(request, 'judge/dashboard.html', context)
+        return render(request, 'judge/queue.html', context)
     return redirect('queue')
 
 
@@ -112,6 +112,9 @@ def evaluate(request):
     the page. However, if judging has not started, disallow any
     form submissions.
     """
+    if not request.user.is_profile_complete():
+        return redirect('profile')
+
     if request.method == 'GET':
         initial = {}
         if request.GET.get('team'):

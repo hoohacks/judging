@@ -12,6 +12,16 @@
             <a href="{% url 'edit_organizations' %}">Edit Organizations</a>
             <br>
 
+            {{ form.non_field_errors }}
+            {% for field in config_form %}
+                <div class="form-group">
+                    {{ field.errors }}
+                    {{ field.label_tag }}
+                    <input class="form-control" id="{{ field.id_for_label }}" maxlength="150" name="{{ field.html_name }}" type="text" value="{{ field.value }}"/> 
+                    <small class="form-text text-muted">{{ field.help_text }}</small>
+                </div>
+            {% endfor %}
+
             <form method="POST" action="{% url 'assign_demos' %}">
                 {% csrf_token %}
                 <input type="submit" class="btn btn-primary" value="Assign Demos">
@@ -23,10 +33,10 @@
             </form>
 
             {% if is_debug %}
-            <form method="POST" action="{% url 'simulate_demos' %}">
-                {% csrf_token %}
-                <input type="submit" class="btn btn-primary" value="Simulate Demos">
-            </form>
+                <form method="POST" action="{% url 'simulate_demos' %}">
+                    {% csrf_token %}
+                    <input type="submit" class="btn btn-primary" value="Simulate Demos">
+                </form>
             {% endif %}
         </div>
     </div>

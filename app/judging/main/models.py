@@ -24,6 +24,10 @@ class Event(models.Model):
     name = models.CharField(max_length=100)
     organizers = models.ForeignKey(
         Organization, null=True, blank=True, on_delete=models.SET_NULL)
+    est_time_per_demo = models.DecimalField(max_digits=3, decimal_places=1, default=5)
+    min_judges_per_team = models.IntegerField(default=1)
+    max_judges_per_sponsor_category = models.IntegerField(default=99)
+    time_limit = models.IntegerField(default=120)
 
     def __str__(self):
         return self.name

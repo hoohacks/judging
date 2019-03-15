@@ -17,20 +17,17 @@ from ..api import criteria as Criteria
 from ..api import criteria_label as CriteriaLabel
 from ..api import demo as Demo
 from ..api import demo_score as DemoScore
-from ..forms.event import EventProfileForm
+from ..forms.event import EventProfileForm, DemoConfigurationForm
 
 
 @login_required
 def dashboard(request):
-    """Dashboard for judges.
+    """Dashboard for admin.
 
     If not logged in, redirects to index. If logged in, but the
     profile is incomplete, redirect to profile. If logged in and
     the profile is complete, render page.
-    """
-    if not request.user.is_profile_complete():
-        return redirect('profile')
-    
+    """    
     if not (request.user.is_staff or request.user.is_superuser):
         return redirect('index')
 
@@ -40,6 +37,7 @@ def dashboard(request):
             'demos': Demo.search(),
             'judges': User.search(is_judge=True),
             'is_debug': settings.DEBUG,
+            'config_form': DemoConfigurationForm(instance=Event.get()),
         }
         return render(request, 'admin/dashboard.html', context)
         
