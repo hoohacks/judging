@@ -6,7 +6,7 @@ import re
 from bs4 import BeautifulSoup
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
-from django.http import JsonResponse
+from django.http import HttpResponse, JsonResponse
 from django.shortcuts import render, redirect
 import requests
 
@@ -131,68 +131,64 @@ def update_organization(request):
 
 @login_required
 def add_organization(request):
-    response = {
-        'success': False,
-        'reason': ''
-    }
     if not (request.user.is_staff or request.user.is_superuser):
-        response['reason'] = 'Must be admin'
-        return JsonResponse(response)
+        messages.error(request, 'Must be admin', extra_tags='add_organization')
+        return HttpResponse('Must be admin')
 
-    if request.method == 'POST':
+    if request.method == 'GET':
+        context = {
+            'organizations': Organization.search().order_by('name'),
+            'organizers_id': Event.get().id,
+        }
+        return render(request, 'admin/edit_organizations.html', context)
+    elif request.method == 'POST':
         org_name = request.POST.get('org_name', None)
         if org_name == None:
-            response['reason'] = 'Must provide organization name'
-            return JsonResponse(response)
+            messages.error(request, 'Must provide organization name', extra_tags='add_organization')
+            return redirect('add_organization')
 
         org_name = org_name.strip()
         if org_name == '':
-            response['reason'] = 'Must provide organization name'
-            return JsonResponse(response)
+            messages.error(request, 'Must provide organization name', extra_tags='add_organization')
+            return redirect('add_organization')
 
         orgs = Organization.search(name=org_name)
         if len(orgs) > 0:
-            response['reason'] = 'Organization with same name already exists'
-            return JsonResponse(response)
+            messages.error(request, 'Organization with same name already exists', extra_tags='add_organization')
+            return redirect('add_organization')
 
         org = Organization.create(org_name)
-        response['success'] = True
-        response['org'] = {
-            'id': org.id,
-            'name': org.name
-        }
-        response['reason'] = 'New organization called {} created'.format(
-            org.name)
-        return JsonResponse(response)
-    return JsonResponse(response)
+        messages.error(request, 'New organization called {} created'.format(org.name), extra_tags='add_organization')
+        return redirect('add_organization')
+    return redirect('add_organization')
 
 
 @login_required
 def delete_organization(request):
-    response = {
-        'success': False,
-        'reason': ''
-    }
     if not (request.user.is_staff or request.user.is_superuser):
-        response['reason'] = 'Must be admin'
-        return JsonResponse(response)
+        messages.error(request, 'Must be admin', extra_tags="delete_organization")
+        return HttpResponse('Must be admin')
 
-    if request.method == 'POST':
+    if request.method == 'GET':
+        context = {
+            'organizations': Organization.search().order_by('name'),
+            'organizers_id': Event.get().id,
+        }
+        return render(request, 'admin/edit_organizations.html', context)
+    elif request.method == 'POST':
         org_id = request.POST.get('org_id', None)
         if org_id == None:
-            response['reason'] = 'Must provide organization ID'
-            return JsonResponse(response)
+            messages.error(request, 'Must provide organization ID', extra_tags="delete_organization")
+            return redirect('delete_organization')
 
         orgs = Organization.search(organization_id=org_id)
         if len(orgs) == 0:
-            response['reason'] = 'Organization with ID {} not found'.format(
-                org_id)
-            return JsonResponse(response)
+            messages.error(request, 'Organization with ID {} not found'.format(org_id), extra_tags="delete_organization")
+            return redirect('delete_organization')
 
         Organization.delete(org_id)
-        response['success'] = True
-        return JsonResponse(response)
-    return JsonResponse(response)
+        return redirect('delete_organization')
+    return redirect('delete_organization')
 
 
 @login_required

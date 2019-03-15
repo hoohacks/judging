@@ -19,7 +19,7 @@
 </div>
 <hr>
 <div>
-    <form class="p-1 submit-on-enter" method="POST" action="{% url 'add_organization' %}">
+    <form id="add-organization-form" class="p-1" method="POST" action="{% url 'add_organization' %}">
         {% csrf_token %}
         <div class="input-group row">
             <input type="text" name="org_name" class="form-control col offset-1" placeholder="New organization..." required>
