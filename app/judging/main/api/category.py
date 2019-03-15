@@ -2,17 +2,18 @@ from django.forms.models import model_to_dict
 from django.shortcuts import render
 
 
-from ..models import Category, Team
+from ..models import Category
+from ..api.team import Team
+from ..api.user import User
 from ..utils.api import *
 
 
 def create(name: str,
-                    organization_id: int,
-                    description: str = None,
-                    number_winners: int = None,
-                    min_judges: int = None,
-                    is_opt_in: bool = None,
-                    can_anyone_judge: bool = None):
+           organization_id: int,
+           description: str = None,
+           number_winners: int = None,
+           min_judges: int = None,
+           is_opt_in: bool = None):
     kwargs = locals()
     fields = {
         'name': {'required': True, 'type': str},
@@ -21,7 +22,6 @@ def create(name: str,
         'number_winners': {'required': False, 'type': int},
         'min_judges': {'required': False, 'type': int},
         'is_opt_in': {'required': False, 'type': bool},
-        'can_anyone_judge': {'required': False, 'type': bool},
     }
     kwargs = clean_fields(fields, kwargs)
     category = Category.objects.create(**kwargs)
@@ -35,8 +35,7 @@ def search(
         organization_id: int = None,
         number_winners: int = None,
         min_judges: int = None,
-        is_opt_in: bool = None,
-        can_anyone_judge: bool = None):
+        is_opt_in: bool = None):
     kwargs = locals()
     fields = {
         'category_id': {'required': False, 'type': int},
@@ -46,7 +45,6 @@ def search(
         'number_winners': {'required': False, 'type': int},
         'min_judges': {'required': False, 'type': int},
         'is_opt_in': {'required': False, 'type': bool},
-        'can_anyone_judge': {'required': False, 'type': bool},
     }
     kwargs = clean_fields(fields, kwargs)
 
@@ -70,9 +68,6 @@ def search(
     if 'is_opt_in' in kwargs:
         categories = categories.filter(
             is_opt_in__exact=kwargs['is_opt_in'])
-    if 'can_anyone_judge' in kwargs:
-        categories = categories.filter(
-            can_anyone_judge__exact=kwargs['can_anyone_judge'])
     return categories
 
 
@@ -83,8 +78,7 @@ def update(
         organization_id: int = None,
         number_winners: int = None,
         min_judges: int = None,
-        is_opt_in: bool = None,
-        can_anyone_judge: bool = None):
+        is_opt_in: bool = None):
     kwargs = locals()
     fields = {
         'category_id': {'required': True, 'type': int},
@@ -94,7 +88,6 @@ def update(
         'number_winners': {'required': False, 'type': int},
         'min_judges': {'required': False, 'type': int},
         'is_opt_in': {'required': False, 'type': bool},
-        'can_anyone_judge': {'required': False, 'type': bool},
     }
     kwargs = clean_fields(fields, kwargs)
 
@@ -115,7 +108,7 @@ def delete(category_id: int):
 
 
 def add_team(category_id: int,
-                      team_id: int):
+             team_id: int):
     kwargs = locals()
     fields = {
         'category_id': {'required': True, 'type': int},
@@ -124,13 +117,13 @@ def add_team(category_id: int,
     kwargs = clean_fields(fields, kwargs)
 
     category = Category.objects.get(pk=kwargs['category_id'])
-    team = Team.objects.get(pk=kwargs['team_id'])
+    team = Team.search(team_id=kwargs['team_id'])[0]
     category.submissions.add(team)
     return category
 
 
 def remove_team(category_id: int,
-                         team_id: int):
+                team_id: int):
     kwargs = locals()
     fields = {
         'category_id': {'required': True, 'type': int},
@@ -139,6 +132,36 @@ def remove_team(category_id: int,
     kwargs = clean_fields(fields, kwargs)
 
     category = Category.objects.get(pk=kwargs['category_id'])
-    team = Team.objects.get(pk=kwargs['team_id'])
+    team = Team.search(team_id=kwargs['team_id'])[0]
     category.submissions.remove(team)
+    return category
+
+
+def add_judge(category_id: int,
+              judge_id: int):
+    kwargs = locals()
+    fields = {
+        'category_id': {'required': True, 'type': int},
+        'judge_id': {'required': True, 'type': int},
+    }
+    kwargs = clean_fields(fields, kwargs)
+
+    category = Category.objects.get(pk=kwargs['category_id'])
+    judge = User.search(user_id=kwargs['judge_id'], is_judge=True)[0]
+    category.judges.add(judge)
+    return category
+
+
+def remove_judge(category_id: int,
+                 judge_id: int):
+    kwargs = locals()
+    fields = {
+        'category_id': {'required': True, 'type': int},
+        'judge_id': {'required': True, 'type': int},
+    }
+    kwargs = clean_fields(fields, kwargs)
+
+    category = Category.objects.get(pk=kwargs['category_id'])
+    judge = User.search(user_id=kwargs['judge_id'], is_judge=True)[0]
+    category.judges.remove(judge)
     return category

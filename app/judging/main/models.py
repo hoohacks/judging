@@ -44,25 +44,6 @@ class Team(models.Model):
         return 'Table {} - {}'.format(self.table, self.name)
 
 
-class Category(models.Model):
-    name = models.CharField(max_length=100)
-    description = models.TextField(blank=True)
-    organization = models.ForeignKey(Organization, on_delete=models.CASCADE)
-    number_winners = models.IntegerField(default=1)
-    min_judges = models.IntegerField(
-        default=1, help_text="The minimum number of judges a team should be seen by for this category")
-    is_opt_in = models.BooleanField(default=False)
-    can_anyone_judge = models.BooleanField(default=False)
-    submissions = models.ManyToManyField(
-        Team, related_name='categories', blank=True)
-
-    def __str__(self):
-        return '[{}] {}'.format(self.organization.name, self.name)
-
-    class Meta:
-        verbose_name_plural = "categories"
-
-
 class User(AbstractUser):
     organization = models.ForeignKey(
         Organization, on_delete=models.CASCADE, null=True, blank=True)
@@ -80,6 +61,26 @@ class User(AbstractUser):
         if self.organization:
             org_name = self.organization.name
         return '{} {} <{}>'.format(self.first_name, self.last_name, org_name)
+
+
+class Category(models.Model):
+    name = models.CharField(max_length=100)
+    description = models.TextField(blank=True)
+    organization = models.ForeignKey(Organization, on_delete=models.CASCADE)
+    number_winners = models.IntegerField(default=1)
+    min_judges = models.IntegerField(
+        default=1, help_text="The minimum number of judges a team should be seen by for this category")
+    is_opt_in = models.BooleanField(default=False)
+    submissions = models.ManyToManyField(
+        Team, related_name='categories', blank=True)
+    judges = models.ManyToManyField(
+        User, related_name='categories', blank=True)
+
+    def __str__(self):
+        return '[{}] {}'.format(self.organization.name, self.name)
+
+    class Meta:
+        verbose_name_plural = "categories"
 
 
 class Criteria(models.Model):
