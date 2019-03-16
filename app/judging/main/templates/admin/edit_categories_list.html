@@ -1,0 +1,54 @@
+{% for category in categories %}
+    <div class="row form-card-wrapper border-bottom p-4 bg-white box-shadow-7">
+        <div class="col-md-1">
+            <div class="pt-2 text-center">{{ forloop.counter }}</div>
+        </div>
+        <div class="col-md-11">
+            <form class="p-1 submit-on-unfocus" method="POST" action="{% url 'update_category' %}" data-delete-action="{% url 'delete_category' %}">
+                {% csrf_token %}
+                <input type="hidden" value="{{ category.id }}" name="category_id" id="category_id">
+                <div class="form-row mb-1">
+                    {% comment %} Name {% endcomment %}
+                    <div class="form-group col-md-12 mb-0">
+                        <div class="input-group">
+                            <input type="text" value="{{ category.name }}" name="name" class="form-control {% if category.organization.id == organizers_id %}border-info{% endif %}" required>
+                            <div class="input-group-append">
+                                <input type="button" class="btn btn-outline-danger category-delete-button form-control" value="Delete">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-row mb-1">
+                    {% comment %} Organization {% endcomment %}
+                    <div class="form-group col-md-3 mb-0">
+                        <label for="organization">Organization</label>
+                        <select name="organization" class="form-control" required>
+                            {% for org in organizations %}
+                            <option value="{{ org.id }}" {% if org.id == category.organization.id %}selected{% endif %}>{{ org.name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    {% comment %} Number of winners {% endcomment %}
+                    <div class="form-group col-md-3 mb-0">
+                        <label for="number_winners"># Winning teams</label>
+                        <input type="number" value="{{ category.number_winners }}" name="number_winners" class="form-control" required>
+                    </div>
+                    {% comment %} Minimum number of judges {% endcomment %}
+                    <div class="form-group col-md-3 mb-0">
+                        <label for="min_judges">Min. # of judges</label>
+                        <input type="number" value="{{ category.min_judges }}" name="min_judges" class="form-control" required>
+                    </div>
+                    {% comment %} Is opt-in prize {% endcomment %}
+                    <div class="form-group col-md-2 mb-0">
+                        <label></label>
+                        <div class="btn-group-toggle" data-toggle="buttons">
+                            <label class="btn btn-light form-control {% if category.is_opt_in %}active{% endif %}">
+                            <input type="checkbox" name="is_opt_in" autocomplete="off"> Opt-In
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+    {% endfor %}

@@ -33,7 +33,7 @@ def import_categories_from_devpost(request):
         context = {
             'categories': Category.search().order_by('name')
         }
-        return render(request, 'admin/edit_categories.html', context)
+        return render(request, 'admin/edit_categories_list.html', context)
     elif request.method == 'POST':
         # Extract devpost url from request data
         fields = {'devpost_url': {'required': True, 'type': str}}
@@ -158,7 +158,7 @@ def add_organization(request):
             return redirect('add_organization')
 
         org = Organization.create(org_name)
-        messages.error(request, 'New organization called {} created'.format(org.name), extra_tags='add_organization')
+        messages.info(request, 'New organization called {} created'.format(org.name), extra_tags='add_organization')
         return redirect('add_organization')
     return redirect('add_organization')
 
@@ -338,6 +338,60 @@ def update_category(request):
     response['updated'] = True  # TODO: check if anything actually changed
     return JsonResponse(response)
 
+
+
+@login_required
+def add_category(request):
+    if not (request.user.is_staff or request.user.is_superuser):
+        messages.error(request, 'Must be admin', extra_tags='add_category')
+        return HttpResponse('Must be admin')
+
+    if request.method == 'GET':
+        context = {
+            'categories': Category.search().order_by('name'),
+            'organizations': Organization.search().order_by('name'),
+            'organizers_id': Event.get().id,
+        }
+        return render(request, 'admin/edit_categories_list.html', context)
+    elif request.method == 'POST':
+        kwargs = {
+            'name': request.POST.get('name', None),
+            'organization_id': request.POST.get('organization', None),
+            'is_opt_in': request.POST.get('is_opt_in', None),
+            'number_winners': request.POST.get('number_winners', None),
+            'min_judges': request.POST.get('min_judges', None)
+        }
+        try:
+            category = Category.create(**kwargs)
+        except Exception as e:
+            messages.error(request, str(e), extra_tags='add_category')
+            return redirect('add_category')  # these three return statements are dumb
+        return redirect('add_category')  # because they could all be collapsed into one
+    return redirect('add_category')  # but I'm going to keep it this way
+
+
+@login_required
+def delete_category(request):
+    if not (request.user.is_staff or request.user.is_superuser):
+        messages.error(request, 'Must be admin', extra_tags="delete_category")
+        return HttpResponse('Must be admin')
+
+    if request.method == 'GET':
+        context = {
+            'categories': Category.search().order_by('name'),
+            'organizations': Organization.search().order_by('name'),
+            'organizers_id': Event.get().id,
+        }
+        return render(request, 'admin/edit_categories_list.html', context)
+    elif request.method == 'POST':
+        category_id = request.POST.get('category_id', None)
+        try:
+            Category.delete(category_id)
+        except Exception as e:
+            messages.error(request, str(e), extra_tags="delete_category")
+            return redirect('delete_category')  # sigh
+        return redirect('delete_category')  # ...
+    return redirect('delete_category')  # see above
 
 
 @login_required

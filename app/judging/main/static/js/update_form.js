@@ -52,3 +52,48 @@ $(document).on('submit', 'form.submit-on-unfocus', function(){
     });
     return false;
 });
+
+
+$(document).on('submit', '#add-category-form', function(){
+    let form = $(this);
+    let url = form.attr('action');
+    let data = form.serialize();
+    $.post(url, data, function(response) {
+        $('#category-list').empty().append(response);
+        form.trigger('reset');
+        form.find('div.btn-group-toggle label').removeClass('active');
+    })
+    return false;
+});
+
+$(document).on('click', 'input.category-delete-button', function() {
+    let form = $(this).closest('form');
+    let url = form.data('delete-action');
+    let data = form.serialize();
+    $.post(url, data, function(response) {
+        $('#category-list').empty().append(response);
+    })
+    return false;
+});
+
+$(document).on('submit', '#add-organization-form', function(){
+    let form = $(this);
+    let url = form.attr('action');
+    let data = form.serialize();
+    $.post(url, data, function(response) {
+        $('#edit-organizations-container').empty().append(response);
+        form.trigger('reset');
+        form.find('div.btn-group-toggle label').removeClass('active');
+    })
+    return false;
+});
+
+$(document).on('click', 'input.org-delete-button', function() {
+    let form = $(this).closest('form');
+    let url = form.data('delete-action');
+    let data = form.serialize();
+    $.post(url, data, function(response) {
+        $('#edit-organizations-container').empty().append(response);
+    })
+    return false;
+});
