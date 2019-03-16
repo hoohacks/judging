@@ -15,17 +15,18 @@
                 <li class="nav-item {% if evaluate_url == request.path %}active{% endif %}">
                     <a class="nav-link" href="{{ evaluate_url }}">Form {% if evaluate_url == request.path %}<span class="sr-only">(current)</span>{% endif %}</a>
                 </li>
-                {% url 'edit_event' as edit_event_url %}
-                <li class="nav-item {% if edit_event_url == request.path %}active{% endif %}">
-                    <a class="nav-link" href="{{ edit_event_url }}">Event {% if edit_event_url == request.path %}<span class="sr-only">(current)</span>{% endif %}</a>
-                </li>
-                {% url 'edit_categories' as edit_categories_url %}
-                <li class="nav-item {% if edit_categories_url == request.path %}active{% endif %}">
-                    <a class="nav-link" href="{{ edit_categories_url }}">Categories {% if edit_categories_url == request.path %}<span class="sr-only">(current)</span>{% endif %}</a>
-                </li>
-                {% url 'edit_organizations' as edit_organizations_url %}
-                <li class="nav-item {% if edit_organizations_url == request.path %}active{% endif %}">
-                    <a class="nav-link" href="{{ edit_organizations_url }}">Organizations {% if edit_organizations_url == request.path %}<span class="sr-only">(current)</span>{% endif %}</a>
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    Configure
+                    </a>
+                    <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                        {% url 'edit_event' as edit_event_url %}
+                        <a class="dropdown-item" href="{{ edit_event_url }}">Event {% if edit_event_url == request.path %}<span class="sr-only">(current)</span>{% endif %}</a>
+                        {% url 'edit_categories' as edit_categories_url %}
+                        <a class="dropdown-item" href="{{ edit_categories_url }}">Categories {% if edit_categories_url == request.path %}<span class="sr-only">(current)</span>{% endif %}</a>
+                        {% url 'edit_organizations' as edit_organizations_url %}
+                        <a class="dropdown-item" href="{{ edit_organizations_url }}">Organizations {% if edit_organizations_url == request.path %}<span class="sr-only">(current)</span>{% endif %}</a>
+                    </div>
                 </li>
                 {% url 'statistics' as statistics_url %}
                 <li class="nav-item {% if statistics_url == request.path %}active{% endif %}">

@@ -26,7 +26,9 @@ def index(request):
     If not logged in, then render page. Otherwise, redirect
     to the dashboard. Links to log in and register page.
     """
-    if request.user.is_authenticated:
+    if request.user.is_superuser or request.user.is_staff:
+        return redirect('dashboard')
+    elif request.user.is_authenticated:
         return redirect('queue')
     return render(request, 'main/index.html')
 
