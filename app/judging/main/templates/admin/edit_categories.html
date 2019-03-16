@@ -5,7 +5,11 @@
 {% block content %}
 <div class="container" id="edit-categories-container">
     <div class="row">
-        <div class="col-12">
+        <div class="col">
+            <h1 class="text-center">Manage Categories</h1>
+        </div>
+        <div class="col-11 mb-4 mx-auto">
+            <h3>Import categories</h3>
             <ul class="messages">
                 {% for message in messages %}
                 <li {% if message.tags %}class="{{ message.tags }}"{% endif %}>
@@ -16,18 +20,25 @@
             </ul>
             <form id="import-categories" method="POST" action="{% url 'import_categories_from_devpost' %}">
                 {% csrf_token %}
-                <label for="devpost_url">Devpost URL</label>
-                <input type="text" class="form-control" name="devpost_url">
-                <input type="submit" class="btn btn-secondary">
+                <div class="form-group">
+                    <label for="devpost_url">Devpost URL</label>
+                    <div class="input-group form-group">
+                        <input type="text" class="form-control" name="devpost_url" placeholder="https://hoohacks.devpost.com/">
+                        <div class="input-group-append">
+                            <input class="btn btn-secondary form-control" type="submit" value="Import">
+                        </div>
+                    </div>
+                </div>
             </form>
         </div>
-        <div id="category-list" class="col-12">
+        <div id="category-list" class="col-12 mb-4">
             {% include 'admin/edit_categories_list.html' %}
         </div>
         
         <div class="col-12">
             <div class="row p-4">
-                <div class="col-md-11 offset-md-1">
+                <div class="col-md-11 mx-auto">
+                    <h3>Add new category</h3>
                     <form id="add-category-form" class="p-1 submit-on-enter" method="POST" action="{% url 'add_category' %}">
                         {% csrf_token %}
                         <div class="form-row mb-1">
@@ -35,7 +46,7 @@
                             <div class="form-group col-md-12 mb-0">
                                 <label for="name">Category name</label>
                                 <div class="input-group">
-                                    <input type="text" value="{{ category.name }}" name="name" class="form-control {% if category.organization.id == organizers_id %}border-info{% endif %}" required>
+                                    <input type="text" value="{{ category.name }}" name="name" class="form-control {% if category.organization.id == organizers_id %}border-info{% endif %}" placeholder="Best Use of ..." required>
                                 </div>
                             </div>
                         </div>
