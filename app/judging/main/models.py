@@ -106,6 +106,8 @@ class CriteriaLabel(models.Model):
 class Demo(models.Model):
     judge = models.ForeignKey(User, on_delete=models.CASCADE)
     team = models.ForeignKey(Team, on_delete=models.CASCADE)
+    raw_score = models.DecimalField(max_digits=9, decimal_places=5, default=0)
+    norm_score = models.DecimalField(max_digits=9, decimal_places=5, default=0)
 
     @property
     def is_for_judge_category(self):

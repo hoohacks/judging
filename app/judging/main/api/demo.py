@@ -56,12 +56,14 @@ def completed(demo_id: int):
     return True
 
 
-def update(demo_id: int, judge_id: int = None, team_id: int = None):
+def update(demo_id: int, judge_id: int = None, team_id: int = None, raw_score: float = None, norm_score: float = None):
     kwargs = locals()
     fields = {
         'demo_id': {'required': True, 'type': int},
         'judge_id': {'required': False, 'type': int},
         'team_id': {'required': False, 'type': int},
+        'raw_score': {'required': False, 'type': float},
+        'norm_score': {'required': False, 'type': float},
     }
     kwargs = clean_fields(fields, kwargs)
 

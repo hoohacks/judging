@@ -40,4 +40,5 @@ if settings.DEBUG:
     urlpatterns += [
         path('generate_judges', views.generate_judges, name='generate_judges'),
         path('simulate_demos', views.simulate_demos, name='simulate_demos'),
+        path('delete_all_demos', views.delete_all_demos, name='delete_all_demos'),
     ]

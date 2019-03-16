@@ -463,3 +463,19 @@ def generate_judges(request):
         
         return JsonResponse({'success': True})
     return JsonResponse({'success': False})
+
+
+
+
+@login_required
+def delete_all_demos(request):
+    """DEVELOPMENT ONLY"""
+    if not (request.user.is_staff or request.user.is_superuser):
+        return JsonResponse({'success': False})
+
+    if request.method == 'POST':
+        demos = Demo.search()
+        for demo in demos:
+            Demo.delete(demo_id=demo.id)
+        return JsonResponse({'success': True})
+    return JsonResponse({'success': False})

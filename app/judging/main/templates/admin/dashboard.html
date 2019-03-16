@@ -39,6 +39,10 @@
                     {% csrf_token %}
                     <input type="submit" class="btn btn-primary" value="Generate judges">
                 </form>
+                <form method="POST" action="{% url 'delete_all_demos' %}">
+                    {% csrf_token %}
+                    <input type="submit" class="btn btn-primary" value="Delete Demos">
+                </form>
             {% endif %}
         </div>
     </div>

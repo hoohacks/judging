@@ -261,11 +261,7 @@ def scores(request):
             team_demos = Demo.search(team_id=team.id)
             demo_totals = []
             for demo in team_demos:
-                scores = DemoScore.search(demo_id=demo.id)
-                demo_total = 0
-                for score in scores:
-                    demo_total += score.criteria.weight * score.value
-                demo_totals.append(demo_total)
+                demo_totals.append(demo.raw_score)
             team_scores.append((sum(demo_totals) / len(demo_totals), team))
 
         rankings = sorted(team_scores, key=lambda i: i[0], reverse=True)
