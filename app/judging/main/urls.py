@@ -12,7 +12,6 @@ urlpatterns = [
     path('profile', views.profile, name='profile'),
     path('evaluate', views.evaluate, name='evaluate'),
     # Admin
-    path('prejudging', views.prejudging, name='prejudging'),
     path('statistics', views.statistics, name='statistics'),
     path('scores', views.scores, name='scores'),
     path('dashboard', views.dashboard, name='dashboard'),
@@ -27,6 +26,7 @@ urlpatterns = [
     path('delete_category', views.delete_category, name='delete_category'),
     path('update_category', views.update_category, name='update_category'),
     # Services - organizations
+    path('edit_organizations', views.edit_organizations, name='edit_organizations'),
     path('add_organization', views.add_organization, name='add_organization'),
     path('delete_organization', views.delete_organization, name='delete_organization'),
     path('update_organization', views.update_organization, name='update_organization'),

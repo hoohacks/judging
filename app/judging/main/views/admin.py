@@ -79,6 +79,23 @@ def edit_categories(request):
 
 
 @login_required
+def edit_organizations(request):
+    """Page for editing organizations."""
+    if not (request.user.is_staff or request.user.is_superuser):
+        return redirect('index')
+
+    if request.method == 'GET':
+        context = {
+            'categories': Category.search().order_by('name'),
+            'organizations': Organization.search().order_by('name'),
+            'organizers_id': Event.get().id,
+        }
+        return render(request, 'admin/edit_organizations.html', context)
+
+    return redirect('edit_organizations')
+
+
+@login_required
 def edit_event(request):
     """Assign demos to judges.
 

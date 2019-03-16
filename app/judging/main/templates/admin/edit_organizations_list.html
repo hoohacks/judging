@@ -1,0 +1,17 @@
+{% for org in organizations %}
+<div>
+    <form class="p-1 submit-on-unfocus" method="POST" action="{% url 'update_organization' %}" data-delete-action="{% url 'delete_organization' %}">
+        {% csrf_token %}
+        <input type="hidden" value="{{ org.id }}" name="org_id" id="org_id">
+        <div class="input-group row">
+            <label for="org_name" class="col-sm-1 my-auto">
+                <div class="text-center">{{ forloop.counter }}</div>
+            </label>
+            <input type="text" value="{{ org.name }}" name="org_name" class="form-control {% if org.id == organizers_id %}border-info{% endif %} col" required>
+            <div class="input-group-append">
+                <input type="button" class="btn btn-outline-danger org-delete-button" value="Delete">
+            </div>
+        </div>
+    </form>
+</div>
+{% endfor %}

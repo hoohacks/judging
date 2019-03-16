@@ -9,8 +9,6 @@
             <h1>Hi {{ user.first_name }}</h1>
             <a href="{% url 'import_devpost' %}">Import devpost</a>
             <br>
-            <a href="{% url 'prejudging' %}">Judging setup</a>
-            <br>
 
             {{ form.non_field_errors }}
             {% for field in config_form %}

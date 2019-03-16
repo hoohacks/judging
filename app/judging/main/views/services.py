@@ -140,7 +140,7 @@ def add_organization(request):
             'organizations': Organization.search().order_by('name'),
             'organizers_id': Event.get().id,
         }
-        return render(request, 'admin/edit_organizations.html', context)
+        return render(request, 'admin/edit_organizations_list.html', context)
     elif request.method == 'POST':
         org_name = request.POST.get('org_name', None)
         if org_name == None:
@@ -174,7 +174,7 @@ def delete_organization(request):
             'organizations': Organization.search().order_by('name'),
             'organizers_id': Event.get().id,
         }
-        return render(request, 'admin/edit_organizations.html', context)
+        return render(request, 'admin/edit_organizations_list.html', context)
     elif request.method == 'POST':
         org_id = request.POST.get('org_id', None)
         if org_id == None:
