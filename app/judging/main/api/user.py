@@ -2,7 +2,10 @@ from django.forms.models import model_to_dict
 from django.shortcuts import render
 
 
-from ..models import User, Organization
+from ..models import User
+from ..api import organization as Organization
+from ..api import category as Category
+from ..api import event as Event
 from ..utils.api import *
 
 
@@ -27,9 +30,15 @@ def create(
     }
     kwargs = clean_fields(fields, kwargs)
     organization_id = kwargs.pop('organization_id')
-    organization = Organization.objects.get(pk=organization_id)
+    organization = Organization.search(organization_id=organization_id)[0]
     kwargs['organization'] = organization
     user = User.objects.create_user(**kwargs)
+
+    # Add judge to category by default
+    organizers_id = Event.get().organizers.id
+    for category in Category.search():
+        if category.organization.id == organizers_id or (user.organization.id and (category.organization.id == user.organization.id)):
+            Category.add_judge(category.id, user.id)
     return user
 
 
@@ -91,6 +100,13 @@ def update(user_id: int,
     user_id = kwargs.pop('user_id')
     User.objects.filter(pk=user_id).update(**kwargs)
     user = User.objects.get(pk=user_id)
+
+    # Add judge to category by default
+    user.categories.clear()
+    organizers_id = Event.get().organizers.id
+    for category in Category.search():
+        if category.organization.id == organizers_id or (user.organization.id and (category.organization.id == user.organization.id)):
+            Category.add_judge(category.id, user.id)
     return user
 
 

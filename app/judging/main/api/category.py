@@ -5,6 +5,7 @@ from django.shortcuts import render
 from ..models import Category
 from ..api import team as Team
 from ..api import user as User
+from ..api import event as Event
 from ..utils.api import *
 
 
@@ -25,6 +26,16 @@ def create(name: str,
     }
     kwargs = clean_fields(fields, kwargs)
     category = Category.objects.create(**kwargs)
+
+    # Add judges by default
+    organizers_id = Event.get().organizers.id
+    if category.organization.id == organization_id:
+        judges = User.search(is_judge=True)
+    else:
+        judges = User.search(organization_id=category.organization.id, is_judge=True)
+    for judge in judges:
+        add_judge(category.id, judge.id)
+
     return category
 
 
@@ -94,6 +105,17 @@ def update(
     category_id = kwargs.pop('category_id')
     Category.objects.filter(pk=category_id).update(**kwargs)
     category = Category.objects.get(pk=category_id)
+
+    # Update judges by default
+    category.judges.clear()
+    organizers_id = Event.get().organizers.id
+    if category.organization.id == organization_id:
+        judges = User.search(is_judge=True)
+    else:
+        judges = User.search(organization_id=category.organization.id, is_judge=True)
+    for judge in judges:
+        add_judge(category.id, judge.id)
+
     return category
 
 
