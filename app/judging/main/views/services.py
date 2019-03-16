@@ -303,6 +303,43 @@ def assign_demos(request):
     return JsonResponse({'success': True})
 
 
+
+@login_required
+def update_category(request):
+    response = {
+        'success': False,
+        'updated': False,
+        'reason': '',
+    }
+    if not (request.user.is_staff or request.user.is_superuser):
+        response['reason'] = 'Must be admin'
+        return JsonResponse(response)
+
+    if request.method != 'POST':
+        response['reason'] = 'Must be POST request'
+        return JsonResponse(response)
+
+    # Extract devpost url from request data
+    kwargs = {
+        'category_id': request.POST.get('category_id', None),
+        'name': request.POST.get('name', None),
+        'organization_id': request.POST.get('organization', None),
+        'is_opt_in': request.POST.get('is_opt_in', None),
+        'number_winners': request.POST.get('number_winners', None),
+        'min_judges': request.POST.get('min_judges', None),
+    }
+    try:
+        category = Category.update(**kwargs)
+    except ApiException as e:
+        response['reason'] = str(e)
+        return response
+
+    response['success'] = True
+    response['updated'] = True  # TODO: check if anything actually changed
+    return JsonResponse(response)
+
+
+
 @login_required
 def simulate_demos(request):
     """DEVELOPMENT ONLY"""

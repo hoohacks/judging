@@ -54,11 +54,28 @@ def prejudging(request):
             'judges': User.search(is_judge=True),
             'is_debug': settings.DEBUG,
             'config_form': DemoConfigurationForm(instance=Event.get()),
-            'categories': Category.search().order_by('name'),
+            'categories': Category.search().order_by('name')
         }
         return render(request, 'admin/prejudging.html', context)
 
     return redirect('prejudging')
+
+
+@login_required
+def edit_categories(request):
+    """Page for editing categories."""
+    if not (request.user.is_staff or request.user.is_superuser):
+        return redirect('index')
+
+    if request.method == 'GET':
+        context = {
+            'categories': Category.search().order_by('name'),
+            'organizations': Organization.search().order_by('name'),
+            'organizers_id': Event.get().id,
+        }
+        return render(request, 'admin/edit_categories.html', context)
+
+    return redirect('edit_categories')
 
 
 @login_required
