@@ -6,7 +6,7 @@ from ..api import criteria_label as CriteriaLabel
 from ..widgets.flat_radio_select import FlatRadioSelect
 
 class EvaluationForm(forms.Form):
-    team = forms.ModelChoiceField(Team.search())
+    team = forms.ModelChoiceField(Team.search().order_by('table', 'name'))
 
     def __init__(self, *args, **kwargs):
         super(forms.Form, self).__init__(*args, **kwargs)

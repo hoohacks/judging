@@ -254,8 +254,7 @@ def assign_demos(request):
         if category.organization.id == organizers.id:  # skip organizer categories
             continue
         for team in category.submissions.all():
-            judges_for_category = User.search(
-                is_judge=True, organization_id=category.organization.id)
+            judges_for_category = category.judges.all()
             for judge in judges_for_category:
                 Demo.create(judge.id, team.id, if_not_exists=True)
 
@@ -443,7 +442,7 @@ def generate_judges(request):
         # Generate notional number of judges per organization
         orgs = Organization.search()
         organizers_id = Event.get().organizers.id
-        avg_num_judges_per_org = 2
+        avg_num_judges_per_org = 3
         judge_needs = []  # list of org ids, one for each judge needed
         for org in orgs:
             if org.id == organizers_id:

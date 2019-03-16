@@ -224,6 +224,9 @@ def statistics(request):
 
         num_judges = len(User.search(is_judge=True))
         num_demos = len(Demo.search())
+        demos_per_judge = 0
+        if num_judges > 0:
+            demos_per_judge = num_demos / num_judges
         statistics.append({
             'name': 'Number of judges',
             'value': num_judges
@@ -234,7 +237,7 @@ def statistics(request):
         })
         statistics.append({
             'name': 'Average demos per judge',
-            'value': num_demos / num_judges
+            'value': demos_per_judge
         })
 
         context['statistics'] = statistics
