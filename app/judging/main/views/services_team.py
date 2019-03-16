@@ -143,7 +143,8 @@ def add_team(request):
     elif request.method == 'POST':
         kwargs = {
             'name': request.POST.get('name', None),
-            'table': request.POST.get('table', None)
+            'table': request.POST.get('table', None),
+            'is_anchor': request.POST.get('is_anchor', None),
         }
         try:
             team = Team.create(**kwargs)
@@ -174,3 +175,67 @@ def delete_team(request):
             return redirect('delete_team')
         return redirect('delete_team')
     return redirect('delete_team')
+
+
+def render_anchor_list(request):
+    anchor_teams = Team.search(is_anchor=True).order_by('name')
+    anchors = []
+    for team in anchor_teams:
+        team_demos = Demo.search(team_id=team.id)
+        num_judges_completed = 0
+        for demo in team_demos:
+            if Demo.completed(demo.id):
+                num_judges_completed += 1
+        anchors.append({
+            'name': team.name,
+            'id': team.id,
+            'num_judges_completed': num_judges_completed
+        })
+    context = {
+        'anchors': anchors,
+        'num_judges': len(User.search(is_judge=True))
+    }
+    return render(request, 'admin/anchors_list.html', context)
+
+
+@login_required
+def add_anchor(request):
+    if not (request.user.is_staff or request.user.is_superuser):
+        messages.error(request, 'Must be admin', extra_tags="delete_team")
+        return HttpResponse('Must be admin')
+
+    if request.method == 'GET':
+        return render_anchor_list(request)
+    elif request.method == 'POST':
+        add_team(request)
+        return redirect('add_anchor')
+
+
+@login_required
+def delete_anchor(request):
+    if not (request.user.is_staff or request.user.is_superuser):
+        messages.error(request, 'Must be admin', extra_tags="delete_team")
+        return HttpResponse('Must be admin')
+
+    if request.method == 'GET':
+        return render_anchor_list(request)
+    elif request.method == 'POST':
+        delete_team(request)
+        return redirect('delete_anchor')
+
+
+@login_required
+def assign_anchor_to_judges(request):
+    if not (request.user.is_staff or request.user.is_superuser):
+        messages.error(request, 'Must be admin', extra_tags="delete_team")
+        return HttpResponse('Must be admin')
+
+    if request.method == 'GET':
+        return render_anchor_list(request)
+    elif request.method == 'POST':
+        team_id = request.POST.get('team_id', None)
+        if team_id:
+            judges = User.search(is_judge=True)
+            for judge in judges:
+                Demo.create(judge_id=judge.id, team_id=team_id, if_not_exists=True)
+        return redirect('assign_anchor_to_judges')

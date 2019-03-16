@@ -116,6 +116,40 @@ def edit_event(request):
 
 
 @login_required
+def normalize(request):
+    """Page for running a judge normalization session.
+
+    Allow organizer to create/update/delete "anchor" teams.
+    The justification behind such a normalization session can be
+    found in the README of this repo.
+    """
+    if not (request.user.is_staff or request.user.is_superuser):
+        return redirect('index')
+
+    if request.method == 'GET':
+        anchor_teams = Team.search(is_anchor=True).order_by('name')
+        anchors = []
+        for team in anchor_teams:
+            team_demos = Demo.search(team_id=team.id)
+            num_judges_completed = 0
+            for demo in team_demos:
+                if Demo.completed(demo.id):
+                    num_judges_completed += 1
+            anchors.append({
+                'name': team.name,
+                'id': team.id,
+                'num_judges_completed': num_judges_completed
+            })
+
+        context = {
+            'anchors': anchors,
+            'num_judges': len(User.search(is_judge=True))
+        }
+        return render(request, 'admin/anchors.html', context)
+    return redirect('normalize')
+
+
+@login_required
 def assign_tables(request):
     """Assign tables to teams.
 

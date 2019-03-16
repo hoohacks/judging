@@ -138,3 +138,40 @@ $(document).on('click', 'input.team-delete-button', function() {
     })
     return false;
 });
+
+
+// === Anchor
+// Add
+$(document).on('submit', '#add-anchor-form', function(){
+    let form = $(this);
+    let url = form.attr('action');
+    let data = form.serialize();
+    $.post(url, data, function(response) {
+        $('#anchor-list').empty().append(response);
+        form.trigger('reset');
+        form.find('div.btn-group-toggle label').removeClass('active');
+    })
+    return false;
+});
+
+// Delete
+$(document).on('click', 'input.anchor-delete-button', function() {
+    let form = $(this).closest('form');
+    let url = form.data('delete-action');
+    let data = form.serialize();
+    $.post(url, data, function(response) {
+        $('#anchor-list').empty().append(response);
+    })
+    return false;
+});
+// Assign
+
+$(document).on('click', 'input.anchor-assign-all-button', function() {
+    let form = $(this).closest('form');
+    let url = form.data('assign-action');
+    let data = form.serialize();
+    $.post(url, data, function(response) {
+        $('#anchor-list').empty().append(response);
+    })
+    return false;
+});

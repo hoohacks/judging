@@ -19,6 +19,10 @@
                 </div>
             {% endfor %}
 
+            <a href="{% url 'normalize' %}">
+                <input type="submit" class="btn btn-primary" value="Run Normalization Session">
+            </a>
+
             <form method="POST" action="{% url 'assign_demos' %}">
                 {% csrf_token %}
                 <input type="submit" class="btn btn-primary" value="Assign Demos">

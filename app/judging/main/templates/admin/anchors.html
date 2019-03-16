@@ -1,0 +1,37 @@
+{% extends 'base.html' %}
+
+{% block title %}Normalization{% endblock %}
+
+{% block content %}
+<div class="container" id="edit-anchors-container">
+    <div class="row">
+        <div class="col">
+            <h1 class="text-center">Normalization session</h1>
+            <p>The purpose of a Normalization session is to...</p>
+            <p>You should follow these procedures...</p>
+        </div>
+        <div id="anchor-list" class="col-12 mb-4">
+            {% include 'admin/anchors_list.html' %}
+        </div>
+        <div class="col-12">
+            <div class="row p-2">
+                <div class="col mx-auto">
+                    <form id="add-anchor-form" class="p-1 submit-on-enter" method="POST" action="{% url 'add_anchor' %}">
+                        {% csrf_token %}
+                        <input type="hidden" name="is_anchor" value="on">
+                        <div class="form-row mb-1 justify-content-center">
+                            {% comment %} Name {% endcomment %}
+                            <div class="form-group col-md-3 mb-0">
+                                <input type="text" name="name" class="form-control" placeholder="New team name" required>
+                            </div>
+                            <div class="form-group col-md-1 col-2 mb-0">
+                                <input type="submit" class="btn btn-secondary btn-block" value="Add">
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
