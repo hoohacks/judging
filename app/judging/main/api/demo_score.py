@@ -80,10 +80,10 @@ def update(demo_score_id: int,
 
     # Recompute demo's total score
     new_score = 0
-    related_demo_scores = search(demo_id=demo_id)
+    related_demo_scores = search(demo_id=demo_score.demo.id)
     for demo_score in related_demo_scores:
         new_score += demo_score.value * demo_score.criteria.weight
-    Demo.update(demo_id=demo_id, raw_score=new_score)
+    Demo.update(demo_id=demo_score.demo.id, raw_score=new_score)
 
     return demo_score
 
