@@ -1,3 +1,4 @@
+from math import sqrt
 from queue import PriorityQueue
 
 from django.contrib.auth.decorators import login_required
@@ -45,6 +46,60 @@ def get_scores(request):
             demo_scores_dict[score.criteria.id] = score.value
         response['success'] = True
         response['data'] = demo_scores_dict
+        return JsonResponse(response)
+    return JsonResponse(response)
+
+
+@login_required
+def normalize_scores(request):
+    response = {
+        'success': False,
+        'reason': ''
+    }
+
+    if request.method == 'POST':
+        ### Calculate judge standard deviation offsets
+        anchor_teams = Team.search(is_anchor=True)
+        if len(anchor_teams) == 0:
+            response['reason'] = 'No anchor teams to normalize on'
+            return response
+
+        judges = User.search(is_judge=True)
+
+        # Compute means and standard deviations
+        anchor_means = {}
+        anchor_sds = {}
+        all_anchor_mean = 0
+        anchor_sd_mean = 0
+        for team in anchor_teams:
+            team_scores = [demo.raw_score for demo in Demo.search(team_id=team.id)]
+            scores_mean = sum(team_scores) / len(team_scores)
+            scores_var = sum([pow(score - scores_mean, 2) for score in team_scores]) / len(team_scores)
+            scores_sd = sqrt(scores_var)
+            anchor_means[team.id] = scores_mean
+            anchor_sds[team.id] = scores_sd
+
+
+        # Compute judge sd offsets
+        for judge in judges:
+            offsets = []
+            for team in anchor_teams:
+                demos = Demo.search(judge_id=judge.id, team_id=team.id)
+                if len(demos) != 0:
+                    offsets.append((demos[0].raw_score - anchor_means[team.id]))
+                    # Could also divide this by anchor_sds[team.id] to get the zscore
+                    # For simplicity, let's assume the distribution of scores doesn't change
+                    #   for each team, an arguably-reasonable assumption
+            if len(offsets) > 0:
+                User.update(user_id=judge.id, sd_offset=sum(offsets) / len(offsets))
+
+        # Compute demo norm_scores
+        for demo in Demo.search():
+            if demo.team.is_anchor:
+                continue
+            Demo.update(demo_id=demo.id, norm_score=demo.raw_score-demo.judge.sd_offset)
+
+        response['success'] = True
         return JsonResponse(response)
     return JsonResponse(response)
 

@@ -81,4 +81,3 @@ def delete(demo_id: int):
     kwargs = clean_fields(fields, kwargs)
 
     Demo.objects.get(pk=kwargs['demo_id']).delete()
-

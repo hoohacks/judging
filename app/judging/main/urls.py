@@ -16,9 +16,6 @@ urlpatterns = [
     path('dashboard', views.dashboard, name='dashboard'),
     path('normalize', views.normalize, name='normalize'),
     path('edit_event', views.edit_event, name='edit_event'),
-    path('get_scores', views.get_scores, name='get_scores'),
-    path('assign_demos', views.assign_demos, name='assign_demos'),
-    path('assign_tables', views.assign_tables, name='assign_tables'),
     # Services - categories
     path('import_categories_from_devpost', views.import_categories_from_devpost, name='import_categories_from_devpost'),
     path('edit_categories', views.edit_categories, name='edit_categories'),
@@ -39,6 +36,11 @@ urlpatterns = [
     path('add_anchor', views.add_anchor, name='add_anchor'),
     path('delete_anchor', views.delete_anchor, name='delete_anchor'),
     path('assign_anchor_to_judges', views.assign_anchor_to_judges, name='assign_anchor_to_judges'),
+    # Services - other
+    path('normalize_scores', views.normalize_scores, name='normalize_scores'),
+    path('get_scores', views.get_scores, name='get_scores'),
+    path('assign_demos', views.assign_demos, name='assign_demos'),
+    path('assign_tables', views.assign_tables, name='assign_tables'),
     # Authentication
     path('register', views.register, name='register'),
     path('login', auth_views.LoginView.as_view(template_name='registration/login.html'), name='login'),

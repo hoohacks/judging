@@ -230,14 +230,18 @@ def scores(request):
         team_scores = []
         for team in teams:
             team_demos = Demo.search(team_id=team.id)
-            demo_totals = []
+            demo_raw_totals = []
+            demo_norm_totals = []
             for demo in team_demos:
-                demo_totals.append(demo.raw_score)
-            team_scores.append((sum(demo_totals) / len(demo_totals), team))
+                demo_raw_totals.append(demo.raw_score)
+                demo_norm_totals.append(demo.norm_score)
+            team_raw_score = sum(demo_raw_totals) / len(demo_raw_totals)
+            team_norm_score = sum(demo_norm_totals) / len(demo_norm_totals)
+            team_scores.append((team_norm_score, team_raw_score, team))
 
         rankings = sorted(team_scores, key=lambda i: i[0], reverse=True)
 
-        score, winner = rankings[0]
+        norm_score, raw_score, winner = rankings[0]
         winning_scores = []
         for demo in Demo.search(team_id=winner.id):
             scores = DemoScore.search(demo_id=demo.id)

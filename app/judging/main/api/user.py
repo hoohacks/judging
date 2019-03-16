@@ -86,7 +86,8 @@ def update(user_id: int,
            last_name: str = None,
            username: str = None,
            organization_id: int = None,
-           is_staff: bool = None):
+           is_staff: bool = None,
+           sd_offset: float = None):
     kwargs = locals()
     fields = {
         'user_id': {'required': True, 'type': int},
@@ -95,6 +96,7 @@ def update(user_id: int,
         'last_name': {'required': False, 'type': str},
         'is_staff': {'required': False, 'type': bool},
         'organization_id': {'required': False, 'type': int},
+        'sd_offset': {'required': False, 'type': float},
     }
     kwargs = clean_fields(fields, kwargs)
     user_id = kwargs.pop('user_id')
