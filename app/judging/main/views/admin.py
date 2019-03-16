@@ -1,6 +1,4 @@
 from collections import deque
-import csv
-from io import StringIO
 
 from django.conf import settings
 from django.contrib import messages
@@ -40,28 +38,6 @@ def dashboard(request):
 
 
 @login_required
-def prejudging(request):
-    """Page for configuration and setup before judging begins."""
-    if not (request.user.is_staff or request.user.is_superuser):
-        return redirect('index')
-
-    if request.method == 'GET':
-        context = {
-            'user': request.user,
-            'demos': Demo.search(),
-            'organizations': Organization.search().order_by('name'),
-            'organizers_id': Event.get().id,
-            'judges': User.search(is_judge=True),
-            'is_debug': settings.DEBUG,
-            'config_form': DemoConfigurationForm(instance=Event.get()),
-            'categories': Category.search().order_by('name')
-        }
-        return render(request, 'admin/prejudging.html', context)
-
-    return redirect('prejudging')
-
-
-@login_required
 def edit_categories(request):
     """Page for editing categories."""
     if not (request.user.is_staff or request.user.is_superuser):
@@ -96,6 +72,21 @@ def edit_organizations(request):
 
 
 @login_required
+def edit_teams(request):
+    """Page for editing teams."""
+    if not (request.user.is_staff or request.user.is_superuser):
+        return redirect('index')
+
+    if request.method == 'GET':
+        context = {
+            'teams': Team.search(is_anchor=False).order_by('table', 'name')
+        }
+        return render(request, 'admin/edit_teams.html', context)
+
+    return redirect('edit_teams')
+
+
+@login_required
 def edit_event(request):
     """Assign demos to judges.
 
@@ -122,60 +113,6 @@ def edit_event(request):
             Event.update(**kwargs)
         return redirect('edit_event')
     return redirect('edit_event')
-
-
-@login_required
-def import_devpost(request):
-    if request.method == 'GET':
-        return render(request, 'admin/devpost.html')
-    if request.method == 'POST':
-        context = {}
-        # source: https://www.pythoncircle.com/post/30/how-to-upload-and-process-the-csv-file-in-django/
-        csv_file = request.FILES['devpost_csv']
-
-        # check is a csv file
-        if not csv_file.name.endswith('.csv'):
-            messages.error(request, 'Uploaded file must be a .csv')
-            return redirect('import_devpost')
-
-        # check if file too large
-        if csv_file.multiple_chunks():
-            messages.error(request, 'Uh oh, file ({:.2f}MB) too large, max (2.5MB)'.format(
-                csv_file.size / (1000 * 1000)))
-            return redirect('import_devpost')
-
-        data = csv_file.read().decode("utf-8")
-        reader = csv.reader(StringIO(data), csv.excel)
-        headers = next(reader)
-        for row in reader:
-            prize = row[0]
-            project_name = row[1]
-            project_url = row[2]
-
-            # get or create team
-            teams = Team.search(link=project_url)
-            if len(teams) == 0:
-                team = Team.create(project_name, link=project_url)
-            else:
-                team = teams[0]
-
-            if prize != '':
-                # get or create category
-                categories = Category.search(name=prize)
-                if len(categories) == 0:
-                    organizers = Event.get().organizers
-                    category = Category.create(
-                        name=prize, organization_id=organizers.id, is_opt_in=True)
-                    messages.warning(request, '"{}" was created and assigned to "{}" by default'.format(
-                        prize, organizers.name))
-                else:
-                    # TODO: more robust edge case checking
-                    category = categories[0]
-
-                # add team to category
-                Category.add_team(category.id, team.id)
-        return redirect('import_devpost')
-    return redirect('import_devpost')
 
 
 @login_required

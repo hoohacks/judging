@@ -22,10 +22,12 @@
                     <div class="dropdown-menu" aria-labelledby="navbarDropdown">
                         {% url 'edit_event' as edit_event_url %}
                         <a class="dropdown-item" href="{{ edit_event_url }}">Event {% if edit_event_url == request.path %}<span class="sr-only">(current)</span>{% endif %}</a>
-                        {% url 'edit_categories' as edit_categories_url %}
-                        <a class="dropdown-item" href="{{ edit_categories_url }}">Categories {% if edit_categories_url == request.path %}<span class="sr-only">(current)</span>{% endif %}</a>
                         {% url 'edit_organizations' as edit_organizations_url %}
                         <a class="dropdown-item" href="{{ edit_organizations_url }}">Organizations {% if edit_organizations_url == request.path %}<span class="sr-only">(current)</span>{% endif %}</a>
+                        {% url 'edit_categories' as edit_categories_url %}
+                        <a class="dropdown-item" href="{{ edit_categories_url }}">Categories {% if edit_categories_url == request.path %}<span class="sr-only">(current)</span>{% endif %}</a>
+                        {% url 'edit_teams' as edit_teams_url %}
+                        <a class="dropdown-item" href="{{ edit_teams_url }}">Teams {% if edit_teams_url == request.path %}<span class="sr-only">(current)</span>{% endif %}</a>
                     </div>
                 </li>
                 {% url 'statistics' as statistics_url %}

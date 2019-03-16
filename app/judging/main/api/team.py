@@ -7,16 +7,17 @@ from ..utils.api import *
 
 
 def create(name: str,
-                table: str = None,
-                members: str = None,
-                link: str = None,
-                is_anchor: bool = None):
+           table: str = None,
+           members: str = None,
+           link: str = None,
+           is_anchor: bool = None):
+    """Create new team or break if already exists."""
     kwargs = locals()
     fields = {
         'name': {'required': True, 'type': str},
         'table': {'required': False, 'type': str},
         'members': {'required': False, 'type': str},
-        'link': {'required': True, 'type': str},
+        'link': {'required': False, 'type': str},
         'is_anchor': {'required': False, 'type': bool},
     }
     kwargs = clean_fields(fields, kwargs)
@@ -25,11 +26,11 @@ def create(name: str,
 
 
 def search(team_id: int = None,
-                name: str = None,
-                table: str = None,
-                members: str = None,
-                link: str = None,
-                is_anchor: bool = None):
+           name: str = None,
+           table: str = None,
+           members: str = None,
+           link: str = None,
+           is_anchor: bool = None):
     kwargs = locals()
     fields = {
         'team_id': {'required': False, 'type': int},
@@ -59,11 +60,11 @@ def search(team_id: int = None,
 
 
 def update(team_id: int,
-                name: str = None,
-                table: str = None,
-                members: str = None,
-                link: str = None,
-                is_anchor: bool = None):
+           name: str = None,
+           table: str = None,
+           members: str = None,
+           link: str = None,
+           is_anchor: bool = None):
     kwargs = locals()
     fields = {
         'team_id': {'required': True, 'type': int},

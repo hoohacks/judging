@@ -7,7 +7,6 @@ from . import views
 urlpatterns = [
     # Judge
     path('', views.index, name='index'),
-    path('register', views.register, name='register'),
     path('queue', views.queue, name='queue'),
     path('profile', views.profile, name='profile'),
     path('evaluate', views.evaluate, name='evaluate'),
@@ -16,9 +15,9 @@ urlpatterns = [
     path('scores', views.scores, name='scores'),
     path('dashboard', views.dashboard, name='dashboard'),
     path('edit_event', views.edit_event, name='edit_event'),
+    path('get_scores', views.get_scores, name='get_scores'),
     path('assign_demos', views.assign_demos, name='assign_demos'),
     path('assign_tables', views.assign_tables, name='assign_tables'),
-    path('import_devpost', views.import_devpost, name='import_devpost'),
     # Services - categories
     path('import_categories_from_devpost', views.import_categories_from_devpost, name='import_categories_from_devpost'),
     path('edit_categories', views.edit_categories, name='edit_categories'),
@@ -30,7 +29,14 @@ urlpatterns = [
     path('add_organization', views.add_organization, name='add_organization'),
     path('delete_organization', views.delete_organization, name='delete_organization'),
     path('update_organization', views.update_organization, name='update_organization'),
-    path('get_scores', views.get_scores, name='get_scores'),
+    # Services - teams
+    path('import_teams_from_devpost', views.import_teams_from_devpost, name='import_teams_from_devpost'),
+    path('edit_teams', views.edit_teams, name='edit_teams'),
+    path('add_team', views.add_team, name='add_team'),
+    path('delete_team', views.delete_team, name='delete_team'),
+    path('update_team', views.update_team, name='update_team'),
+    # Authentication
+    path('register', views.register, name='register'),
     path('login', auth_views.LoginView.as_view(template_name='registration/login.html'), name='login'),
     path('logout', auth_views.LogoutView.as_view(next_page='index'), name='logout'),
 ]

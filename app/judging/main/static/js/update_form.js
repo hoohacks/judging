@@ -53,7 +53,18 @@ $(document).on('submit', 'form.submit-on-unfocus', function(){
     return false;
 });
 
+// === Category
+// Import
+$(document).on('submit', '#import-categories', function(){
+    let url = $(this).attr('action');
+    let data = $(this).serialize();
+    $.post(url, data, function(response) {
+        $('#edit-categories-container').empty().append(response);
+    })
+    return false;
+});
 
+// Add
 $(document).on('submit', '#add-category-form', function(){
     let form = $(this);
     let url = form.attr('action');
@@ -66,6 +77,7 @@ $(document).on('submit', '#add-category-form', function(){
     return false;
 });
 
+// Delete
 $(document).on('click', 'input.category-delete-button', function() {
     let form = $(this).closest('form');
     let url = form.data('delete-action');
@@ -76,6 +88,8 @@ $(document).on('click', 'input.category-delete-button', function() {
     return false;
 });
 
+// === Category
+// Add
 $(document).on('submit', '#add-organization-form', function(){
     let form = $(this);
     let url = form.attr('action');
@@ -88,6 +102,7 @@ $(document).on('submit', '#add-organization-form', function(){
     return false;
 });
 
+// Delete
 $(document).on('click', 'input.org-delete-button', function() {
     let form = $(this).closest('form');
     let url = form.data('delete-action');
@@ -98,11 +113,28 @@ $(document).on('click', 'input.org-delete-button', function() {
     return false;
 });
 
-$(document).on('submit', '#import-categories', function(){
-    let url = $(this).attr('action');
-    let data = $(this).serialize();
+
+// === Team
+// Add
+$(document).on('submit', '#add-team-form', function(){
+    let form = $(this);
+    let url = form.attr('action');
+    let data = form.serialize();
     $.post(url, data, function(response) {
-        $('#edit-categories-container').empty().append(response);
+        $('#team-list').empty().append(response);
+        form.trigger('reset');
+        form.find('div.btn-group-toggle label').removeClass('active');
+    })
+    return false;
+});
+
+// Delete
+$(document).on('click', 'input.team-delete-button', function() {
+    let form = $(this).closest('form');
+    let url = form.data('delete-action');
+    let data = form.serialize();
+    $.post(url, data, function(response) {
+        $('#team-list').empty().append(response);
     })
     return false;
 });

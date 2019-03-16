@@ -1,0 +1,53 @@
+
+<div class="row">
+    <div class="col-11 mx-auto">
+        <h3>Edit teams</h3>
+        <ul class="messages">
+            {% for message in messages %}
+            <li {% if message.tags %}class="{{ message.tags }}"{% endif %}>
+                {% if message.level == DEFAULT_MESSAGE_LEVELS.ERROR %}Important: {% endif %}
+                {{ message }}
+            </li>
+            {% endfor %}
+        </ul>
+    </div>
+</div>
+{% for team in teams %}
+    <div class="row form-card-wrapper border-bottom p-2 bg-white box-shadow-7">
+        <div class="col">
+            <form class="p-1 submit-on-unfocus" method="POST" action="{% url 'update_team' %}" data-delete-action="{% url 'delete_team' %}">
+                {% csrf_token %}
+                <input type="hidden" value="{{ team.id }}" name="team_id" id="team_id">
+                <div class="form-row mb-1 justify-content-center">
+                    {% comment %} Table {% endcomment %}
+                    <div class="form-group col-md-2 col-sm-4 mb-0">
+                        {% comment %} <label for="table">Table</label> {% endcomment %}
+                        <div class="input-group">
+                            <div class="input-group-prepend">
+                                <div class="input-group-text">Table</div>
+                            </div>
+                            <input type="text" value="{{ team.table }}" name="table" class="form-control" required>
+                        </div>
+                    </div>
+                    {% comment %} Name {% endcomment %}
+                    {% comment %}
+                        Non-editable for now because don't want organizers switching two team's names
+                        when they should just switch their tables. If the need arises to edit an actual team's
+                        name, I suggest they use the Django admin site.    
+                    {% endcomment %}
+                    <div class="form-group col-md-3 mb-0">
+                        {% comment %} <label for="name">Team Name</label> {% endcomment %}
+                        <div class="row h-100 align-items-center">
+                            <div class="col">
+                                <p class="m-md-0 m-2 text-md-left text-center">{{ team.name }}</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group col-md-1 col-2 mb-0">
+                        <input type="button" class="btn btn-outline-danger team-delete-button form-control" value="Delete">
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+    {% endfor %}
