@@ -8,20 +8,39 @@
         <div class="col-sm-6">
             <h1>Hi {{ user.first_name }}</h1>
             <br>
-
-            {{ form.non_field_errors }}
-            {% for field in config_form %}
-                <div class="form-group">
-                    {{ field.errors }}
-                    {{ field.label_tag }}
-                    <input class="form-control" id="{{ field.id_for_label }}" maxlength="150" name="{{ field.html_name }}" type="text" value="{{ field.value }}"/> 
-                    <small class="form-text text-muted">{{ field.help_text }}</small>
-                </div>
-            {% endfor %}
-
-            <a href="{% url 'normalize' %}">
-                <input type="submit" class="btn btn-primary" value="Run Normalization Session">
-            </a>
+            <ol>
+                <li>Before hackathon
+                    <ol type="a">
+                        <li><a href="{% url 'edit_event' %}">Customize event details</a></li>
+                        <li><a href="{% url 'edit_organizations' %}">Define sponsors/organizations</a></li>
+                        <li><a href="{% url 'edit_categories' %}">List prize categories</a></li>
+                    </ol>
+                </li>
+                <li>During hackathon, before judging
+                    <ol type="a">
+                        <li><a href="{% url 'normalize' %}">Run normalization session</a></li>
+                        <li><a href="{% url 'edit_teams' %}">List teams</a></li>
+                        <li><a href="{% url 'dashboard' %}">Assign tables</a></li>
+                        <li><a href="{% url 'dashboard' %}">Assign demos</a></li>
+                    </ol>
+                </li>
+                <li>During hackathon, while judging
+                    <ol type="a">
+                        <li><a href="{% url 'dashboard' %}">Monitor progress</a></li>
+                        <li><a href="{% url 'edit_teams' %}">Change team table numbers as needed</a></li>
+                    </ol>
+                </li>
+                <li>During hackathon, after judging
+                    <ol type="a">
+                        <li><a href="{% url 'scores' %}">Normalize scores and view rankings</a></li>
+                    </ol>
+                </li>
+                <li>After hackathon
+                    <ol type="a">
+                        <li><a href="{% url 'dashboard' %}">Export data</a></li>
+                    </ol>
+                </li>
+            </ol>
 
             <form method="POST" action="{% url 'assign_demos' %}">
                 {% csrf_token %}
@@ -34,6 +53,7 @@
             </form>
 
             {% if is_debug %}
+                <h3>Development only</h3>
                 <form method="POST" action="{% url 'simulate_demos' %}">
                     {% csrf_token %}
                     <input type="submit" class="btn btn-primary" value="Simulate Demos">
