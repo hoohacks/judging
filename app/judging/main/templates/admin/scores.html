@@ -7,22 +7,22 @@
     <div class="row justify-content-center">
         <div class="col-sm-8">
             <h1 class="text-center">Scores</h1>
-            <form method="POST" action="{% url 'normalize_scores' %}">
+            <form method="POST" action="{% url 'normalize_scores' %}" class="row mb-4">
                 {% csrf_token %}
-                <input type="submit" value="Normalize scores">
+                <input type="submit" value="Normalize scores" class="btn btn-secondary btn-block col-4 mx-auto">
             </form>
             <div class="row">
-                <p class="col-4 text-right font-weight-bold">Table</p>
+                <p class="col-2 text-right font-weight-bold">Table</p>
                 <p class="col-4 text-left font-weight-bold">Name</p>
-                <p class="col-2 text-left font-weight-bold">Raw Score</p>
-                <p class="col-2 text-left font-weight-bold">Norm Score</p>
+                <p class="col-3 text-left font-weight-bold">Raw Score</p>
+                <p class="col-3 text-left font-weight-bold">Norm Score</p>
             </div>
             {% for norm_score, raw_score, team in rankings %}
             <div class="row">
-                <p class="col-4 text-right">{{ team.table }}</p>
+                <p class="col-2 text-right">{{ team.table }}</p>
                 <p class="col-4 text-left">{{ team.name }}</p>
-                <p class="col-2 text-left">{{ raw_score|floatformat:"3" }}</p>
-                <p class="col-2 text-left">{{ norm_score|floatformat:"3" }}</p>
+                <p class="col-3 text-left">{{ raw_score|floatformat:"3" }}</p>
+                <p class="col-3 text-left">{{ norm_score|floatformat:"3" }}</p>
             </div>
             {% endfor %}
         </div>

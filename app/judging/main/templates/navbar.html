@@ -11,10 +11,6 @@
                 <li class="nav-item {% if dashboard_url == request.path %}active{% endif %}">
                     <a class="nav-link" href="{{ dashboard_url }}">Dashboard {% if dashboard_url == request.path %}<span class="sr-only">(current)</span>{% endif %}</a>
                 </li>
-                {% url 'evaluate' as evaluate_url %}
-                <li class="nav-item {% if evaluate_url == request.path %}active{% endif %}">
-                    <a class="nav-link" href="{{ evaluate_url }}">Form {% if evaluate_url == request.path %}<span class="sr-only">(current)</span>{% endif %}</a>
-                </li>
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                     Configure
@@ -29,6 +25,10 @@
                         {% url 'edit_teams' as edit_teams_url %}
                         <a class="dropdown-item" href="{{ edit_teams_url }}">Teams {% if edit_teams_url == request.path %}<span class="sr-only">(current)</span>{% endif %}</a>
                     </div>
+                </li>
+                {% url 'scores' as scores_url %}
+                <li class="nav-item {% if scores_url == request.path %}active{% endif %}">
+                    <a class="nav-link" href="{{ scores_url }}">Scores {% if scores_url == request.path %}<span class="sr-only">(current)</span>{% endif %}</a>
                 </li>
                 {% url 'statistics' as statistics_url %}
                 <li class="nav-item {% if statistics_url == request.path %}active{% endif %}">

@@ -7,7 +7,15 @@
 <div id="evaluation-form-container" class="container-fluid">
     <div class="row justify-content-center">
         <div class="col col-md-6">
-            <h1>Evaluate</h1>               
+            <h1>Evaluate</h1>             
+            <ul class="messages">
+                {% for message in messages %}
+                <li {% if message.tags %}class="{{ message.tags }}"{% endif %}>
+                    {% if message.level == DEFAULT_MESSAGE_LEVELS.ERROR %}Important: {% endif %}
+                    {{ message }}
+                </li>
+                {% endfor %}
+            </ul>  
             <form id="evaluate-form" method="POST" data-get-scores-action="{% url 'get_scores' %}">
                 {% csrf_token %}
                 {{ form.non_field_errors }}

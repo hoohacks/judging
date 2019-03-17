@@ -144,6 +144,10 @@ def evaluate(request):
         }
         return render(request, 'judge/evaluate.html', context)
     elif request.method == 'POST':
+        if len(User.search(user_id=request.user.id, is_judge=True)) == 0:
+            messages.error(request, 'Only judges can evaluate teams')
+            return redirect('evaluate')
+
         # Parse scores
         scores = {}
         prog = re.compile('^criteria-\d+$')
