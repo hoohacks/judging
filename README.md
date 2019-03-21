@@ -8,7 +8,7 @@ A comprehensive judging platform for hackathons
 To dev locally:
 - Clone repo. `git clone <>`
 - Spin up. `docker-compose up`
-- Open at `localhost:8052` with un:admin & pw:HackathonsRule!
+- Open at `localhost:5082` with un:admin & pw:HackathonsRule!
     - Otherwise, create superuser `python manage.py createsuperuser`
 
 ## 3. Motivation
