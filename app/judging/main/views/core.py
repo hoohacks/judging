@@ -4,7 +4,9 @@ from django.contrib import messages
 from django.contrib.auth import login, authenticate
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect
-
+from django.views.decorators.csrf import csrf_exempt
+from django.http import JsonResponse
+import uuid
 
 from ..api import user as User
 from ..api import organization as Organization
@@ -32,7 +34,6 @@ def index(request):
         return redirect('queue')
     return render(request, 'main/index.html')
 
-
 def register(request):
     """Registration page for judges.
 
@@ -57,6 +58,79 @@ def register(request):
         login(request, user)
         return redirect('queue')
     return redirect('register')
+
+@csrf_exempt
+def register_without_redirect(request):
+    """Registration page for judges.
+
+    Links to login page for users who already have an
+    account. On successful registration, goes to profile
+    page with a next to dashboard.
+    """
+    if request.user.is_authenticated:
+        return JsonResponse({
+            "code": 403,
+            "msg": "Account already csreated"
+        })
+
+    if request.method == 'GET':
+        context = {'form': RegistrationForm()}
+        return JsonResponse({
+            "code": 403,
+            "msg": "GET Request - need a POST request"
+        })
+    elif request.method == 'POST':
+        form = RegistrationForm(request.POST)
+        if not form.is_valid():
+            return JsonResponse({
+                "code": 403,
+                "msg": form.errors
+            })
+        form.save()  # create user
+        username = form.cleaned_data.get('username')
+        password = form.cleaned_data.get('password1')
+        user = authenticate(username=username, password=password)
+        login(request, user)
+        return JsonResponse({
+            "code": 200,
+            "msg": "Account Created"
+        })
+    return JsonResponse({
+        "code": 403,
+        "msg": "Could not create account"
+    })
+
+@csrf_exempt
+def login_without_redirect(request, auth_hash):
+    if request.method == "GET":
+        user = User.search(auth_token=auth_hash).first()
+        if user != None: 
+            login(request, user)
+            return redirect('dashboard')
+    return JsonResponse({
+            "code": 403,
+            "msg": "Error"
+        })
+
+@csrf_exempt
+def get_auth_token(request):
+    username = request.POST.get('username', '')
+    password = request.POST.get('password', '')
+    user = authenticate(username=username, password=password)
+    if user != None:
+        user.auth_token = str(uuid.uuid1())
+        user.save()
+        return JsonResponse({
+            "auth_token": user.auth_token
+        })
+    else:
+        return JsonResponse({
+            "auth_token": ""
+        })
+
+@csrf_exempt
+def back_to_main(request):
+    return redirect("http://localhost:5000")
 
 
 @login_required

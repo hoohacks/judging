@@ -48,6 +48,7 @@ class User(AbstractUser):
     organization = models.ForeignKey(
         Organization, on_delete=models.CASCADE, null=True, blank=True)
     sd_offset = models.DecimalField(max_digits=9, decimal_places=5, default=0)
+    auth_token = models.CharField(max_length=100, default="")
 
     def is_profile_complete(self):
         if self.is_staff or self.is_superuser:

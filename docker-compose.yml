@@ -19,8 +19,9 @@ services:
       while !</dev/tcp/db/5432; do sleep 1; done;
       cp node_modules/bootstrap/dist/js/bootstrap.bundle.min.js main/static/js/bootstrap.bundle.min.js &&
       cp node_modules/jquery/dist/jquery.min.js main/static/js/jquery.min.js;
+      python manage.py makemigrations;
       python manage.py migrate;
-      python manage.py loaddata main/fixtures/dev.json;
+      python manage.py loaddata main/fixtures/develop.json;
       python manage.py collectstatic --noinput;
       mod_wsgi-express start-server
         --working-directory /app/judging

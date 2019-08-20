@@ -62,7 +62,7 @@ def normalize_scores(request):
         anchor_teams = Team.search(is_anchor=True)
         if len(anchor_teams) == 0:
             response['reason'] = 'No anchor teams to normalize on'
-            return response
+            return JsonResponse(response)
 
         judges = User.search(is_judge=True)
 
@@ -113,8 +113,8 @@ def assign_demos(request):
     if not (request.user.is_staff or request.user.is_superuser):
         return JsonResponse({'success': False, 'reason': 'Must be admin'})
 
-    if request.method != 'POST':
-        return JsonResponse({'success': False, 'reason': 'Must be POST'})
+    if request.method != 'GET':
+        return JsonResponse({'success': False, 'reason': 'Must be GET'})
 
     teams = Team.search()
     judges = User.search(is_judge=True)

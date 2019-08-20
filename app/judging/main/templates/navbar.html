@@ -1,6 +1,6 @@
 {% if user.is_authenticated %}
 <nav class="navbar fixed-top navbar-expand-lg navbar-dark bg-primary box-shadow-7">
-    <a class="navbar-brand" href="{% url 'index' %}">Hoot</a>
+    <a class="navbar-brand" href="{% url 'index' %}">HooHacks Judging</a>
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon">≡</span>
     </button>
@@ -39,7 +39,7 @@
                     <a class="nav-link" href="{{ profile_url }}">Profile {% if profile_url == request.path %}<span class="sr-only">(current)</span>{% endif %}</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="{% url 'logout' %}">Log Out</a>
+                    <a class="nav-link" href="{% url 'back' %}">Back to Main System</a>
                 </li>
             {% else %}
                 {% url 'queue' as queue_url %}
@@ -55,7 +55,7 @@
                     <a class="nav-link" href="{{ profile_url }}">Profile {% if profile_url == request.path %}<span class="sr-only">(current)</span>{% endif %}</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="{% url 'logout' %}">Log Out</a>
+                    <a class="nav-link" href="{% url 'back' %}">Back to Main System</a>
                 </li>
             {% endif %}
         </ul>

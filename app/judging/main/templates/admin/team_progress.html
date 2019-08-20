@@ -1,0 +1,42 @@
+
+{% extends 'base.html' %}
+
+{% block title %}Normalization{% endblock %}
+
+{% block content %}
+<div class="container" id="edit-anchors-container">
+    <div class="row">
+        <div class="col">
+            <h1 class="text-center">Team Progress</h1>
+        </div>
+        <div id="anchor-list" class="col-12 mb-4">
+            {% for team in teams %}
+                <div class="row form-card-wrapper border-bottom p-2 bg-white box-shadow-7">
+                    <div class="col">
+                            <input type="hidden" value="{{ team.id }}" name="team_id" id="team_id">
+                            <div class="form-row mb-1 justify-content-center">
+                                {% comment %} Judge completion progress {% endcomment %}
+                                <div class="form-group col-md-2 col-sm-4 mb-0">
+                                    <div class="row h-100 align-items-center">
+                                        <div class="col">
+                                            <p class="m-md-0 m-2 text-md-left text-center">{{ team.num_judges_completed }} / {{ num_judges }}</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                {% comment %} Name {% endcomment %}
+                                <div class="form-group col-md-3 mb-0">
+                                    <div class="row h-100 align-items-center">
+                                        <div class="col">
+                                            <p class="m-md-0 m-2 text-md-left text-center">{{ team.name }}</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                {% endfor %}
+        </div>
+    </div>
+</div>
+{% endblock %}

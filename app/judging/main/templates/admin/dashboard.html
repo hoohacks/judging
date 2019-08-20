@@ -20,13 +20,13 @@
                     <ol type="a">
                         <li><a href="{% url 'normalize' %}">Run normalization session</a></li>
                         <li><a href="{% url 'edit_teams' %}">List teams</a></li>
-                        <li><a href="{% url 'dashboard' %}">Assign tables</a></li>
-                        <li><a href="{% url 'dashboard' %}">Assign demos</a></li>
+                        <li><a href="{% url 'assign_tables' %}">Assign tables</a></li>
+                        <li><a href="{% url 'assign_demos' %}">Assign demos</a></li>
                     </ol>
                 </li>
                 <li>During hackathon, while judging
                     <ol type="a">
-                        <li><a href="{% url 'dashboard' %}">Monitor progress</a></li>
+                        <li><a href="{% url 'team_progress' %}">Monitor progress</a></li>
                         <li><a href="{% url 'edit_teams' %}">Change team table numbers as needed</a></li>
                     </ol>
                 </li>
@@ -42,6 +42,7 @@
                 </li>
             </ol>
 
+        {% comment %}
             <form method="POST" action="{% url 'assign_demos' %}">
                 {% csrf_token %}
                 <input type="submit" class="btn btn-primary" value="Assign Demos">
@@ -51,6 +52,7 @@
                 {% csrf_token %}
                 <input type="submit" class="btn btn-primary" value="Assign Tables">
             </form>
+        {% endcomment %}
 
             {% if is_debug %}
                 <h3>Development only</h3>

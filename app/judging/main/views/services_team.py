@@ -60,7 +60,6 @@ def import_teams_from_devpost(request):
             prize = row[0]
             project_name = row[1]
             project_url = row[2]
-
             # get or create team
             teams = Team.search(link=project_url)
             if len(teams) == 0:

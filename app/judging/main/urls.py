@@ -10,6 +10,8 @@ urlpatterns = [
     path('queue', views.queue, name='queue'),
     path('profile', views.profile, name='profile'),
     path('evaluate', views.evaluate, name='evaluate'),
+    path('register_admin', views.register_without_redirect, name='register_without_redirect'),
+    path('login_admin/<str:auth_hash>/', views.login_without_redirect, name='login_without_redirect'),
     # Admin
     path('statistics', views.statistics, name='statistics'),
     path('scores', views.scores, name='scores'),
@@ -38,6 +40,7 @@ urlpatterns = [
     path('assign_anchor_to_judges', views.assign_anchor_to_judges, name='assign_anchor_to_judges'),
     # Services - other
     path('normalize_scores', views.normalize_scores, name='normalize_scores'),
+    path('team_progress', views.team_progress, name='team_progress'),
     path('get_scores', views.get_scores, name='get_scores'),
     path('assign_demos', views.assign_demos, name='assign_demos'),
     path('assign_tables', views.assign_tables, name='assign_tables'),
@@ -45,6 +48,8 @@ urlpatterns = [
     path('register', views.register, name='register'),
     path('login', auth_views.LoginView.as_view(template_name='registration/login.html'), name='login'),
     path('logout', auth_views.LogoutView.as_view(next_page='index'), name='logout'),
+    path('back', views.back_to_main, name='back'),
+    path('get_auth_token', views.get_auth_token, name='get_auth_token')
 ]
 
 # DEVELOPMENT ONLY

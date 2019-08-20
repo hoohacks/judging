@@ -148,6 +148,35 @@ def normalize(request):
         return render(request, 'admin/anchors.html', context)
     return redirect('normalize')
 
+@login_required
+def team_progress(request):
+    """Page for getting team progress.
+    """
+    if not (request.user.is_staff or request.user.is_superuser):
+        return redirect('index')
+
+    if request.method == 'GET':
+        all_teams = Team.search().order_by('name')
+        teams = []
+        for team in all_teams:
+            team_demos = Demo.search(team_id=team.id)
+            num_judges_completed = 0
+            for demo in team_demos:
+                if Demo.completed(demo.id):
+                    num_judges_completed += 1
+            teams.append({
+                'name': team.name,
+                'id': team.id,
+                'num_judges_completed': num_judges_completed
+            })
+
+        context = {
+            'teams': teams,
+            'num_judges': len(User.search(is_judge=True))
+        }
+        return render(request, 'admin/team_progress.html', context)
+    return redirect('team_progress')
+
 
 @login_required
 def assign_tables(request):
@@ -158,7 +187,7 @@ def assign_tables(request):
     if not (request.user.is_staff or request.user.is_superuser):
         return redirect('index')
 
-    if request.method == 'POST':
+    if request.method == 'GET':
         teams = Team.search().order_by('id')
         num_digits = len(str(len(teams)))
         table_cnt = 1
@@ -235,8 +264,12 @@ def scores(request):
             for demo in team_demos:
                 demo_raw_totals.append(demo.raw_score)
                 demo_norm_totals.append(demo.norm_score)
-            team_raw_score = sum(demo_raw_totals) / len(demo_raw_totals)
-            team_norm_score = sum(demo_norm_totals) / len(demo_norm_totals)
+            try:
+                team_raw_score = sum(demo_raw_totals) / len(demo_raw_totals)
+                team_norm_score = sum(demo_norm_totals) / len(demo_norm_totals)
+            except:
+                team_raw_score = 0
+                team_norm_score = 0
             team_scores.append((team_norm_score, team_raw_score, team))
 
         rankings = sorted(team_scores, key=lambda i: i[0], reverse=True)

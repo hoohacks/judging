@@ -48,7 +48,8 @@ def search(user_id: int = None,
            username: str = None,
            organization_id: int = None,
            is_staff: bool = None,
-           is_judge: bool = None):
+           is_judge: bool = None,
+           auth_token: str = None):
     kwargs = locals()
     fields = {
         'user_id': {'required': False, 'type': int},
@@ -58,6 +59,7 @@ def search(user_id: int = None,
         'is_staff': {'required': False, 'type': bool},
         'is_judge': {'required': False, 'type': bool},
         'organization_id': {'required': False, 'type': int},
+        'auth_token': {'required': False, 'type': str},
     }
     kwargs = clean_fields(fields, kwargs)
 
@@ -74,6 +76,8 @@ def search(user_id: int = None,
         users = users.filter(is_staff__exact=kwargs['is_staff'])
     if 'organization_id' in kwargs:
         users = users.filter(organization__id__exact=kwargs['organization_id'])
+    if 'auth_token' in kwargs:
+        users = users.filter(auth_token__icontains=kwargs['auth_token'])
     if 'is_judge' in kwargs:
         users = users.filter(organization__isnull=False)
         users = users.filter(is_staff__exact=False)
