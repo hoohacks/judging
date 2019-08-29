@@ -70,7 +70,7 @@ def register_without_redirect(request):
     if request.user.is_authenticated:
         return JsonResponse({
             "code": 403,
-            "msg": "Account already csreated"
+            "msg": "Account already created"
         })
 
     if request.method == 'GET':
@@ -104,7 +104,9 @@ def register_without_redirect(request):
 def login_without_redirect(request, auth_hash):
     if request.method == "GET":
         user = User.search(auth_token=auth_hash).first()
-        if user != None: 
+        if user != None and auth_hash != "": 
+            user.auth_token = ""
+            user.save()
             login(request, user)
             return redirect('dashboard')
     return JsonResponse({

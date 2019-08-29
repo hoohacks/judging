@@ -1,0 +1,42 @@
+@import '../abstracts/variables';
+@import 'typography';
+
+
+html, body {
+    width: 100%;
+    min-height: 100%;
+    font-family: $base-font-family;
+    color: $primary-1;
+    background: $neutral-9;
+}
+
+body {
+    padding-top: 72px; // 56px for navbar + 16px for extra
+    margin-bottom: 72px;
+}
+
+h1 {
+    text-align: left;
+    font-weight: 700;
+    margin-bottom: 1.5rem;
+}
+
+h5 {
+    font-size: 1.125rem;
+    font-weight: 700;
+}
+
+h6 {
+    text-transform: uppercase;
+    color: $neutral-6;
+    font-size: 0.875rem;
+    font-weight: 700;
+}
+
+label {
+    margin-bottom: 0;
+}
+
+section {
+    margin-bottom: 2rem;
+}
